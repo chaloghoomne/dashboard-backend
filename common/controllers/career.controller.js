@@ -3,7 +3,7 @@ const uploadImages = require("../../utils/uploadImages");
 const paginate = require("../../utils/paginate");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const sendMail = require("../../utils/sendMail");
-const { notificationQueue } = require("../../queue/notification.queue");
+// const { notificationQueue } = require("../../queue/notification.queue");
 
 module.exports = {
   async addCareer(req, res) {

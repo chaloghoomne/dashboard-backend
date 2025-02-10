@@ -1,58 +1,32 @@
-const { Queue, Worker } = require("bullmq");
-const uploadToS3 = require("../utils/uploadToS3");
-const mongoose = require("mongoose");
+const axios = require("axios");
 
-const uploadQueue = new Queue("uploadQueue", {
-  connection: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-  },
-});
+const BUNNY_STORAGE_ZONE = process.env.BUNNY_STORAGE_ZONE;
+const BUNNY_ACCESS_KEY = process.env.BUNNY_ACCESS_KEY;
+const BUNNY_STORAGE_REGION = process.env.BUNNY_STORAGE_REGION || "sg"; // Example: "sg" for Singapore
 
-async function uploadQueueWorker() {
-  const worker = new Worker(
-    "uploadQueue",
-    async (job) => {
-      try {
-        const { images } = job.data;
-        const Model = mongoose.model(images[0].modelName);
-        for (const image of images) {
-          const file = {
-            buffer: Buffer.from(image.buffer.data),
-            originalname: image.originalname,
-            mimetype: image.mimetype,
-          };
-          const imageUrl = await uploadToS3(file);
+const BASE_URL = `https://${BUNNY_STORAGE_REGION}.storage.bunnycdn.com/${BUNNY_STORAGE_ZONE}/`;
 
-          const updateData = {};
-          updateData[image.field] = imageUrl;
-          await Model.findByIdAndUpdate(image.id, { $set: updateData });
-        }
+async function uploadToBunny(file) {
+  try {
+    const fileName = `${Date.now()}-${file.originalname}`;
+    const filePath = BASE_URL + fileName;
 
-        return images.map((image) => image.field);
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
-    },
-    {
-      connection: {
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+    const response = await axios.put(filePath, file.buffer, {
+      headers: {
+        "AccessKey": BUNNY_ACCESS_KEY,
+        "Content-Type": file.mimetype,
       },
+    });
+
+    if (response.status === 201) {
+      return `https://${BUNNY_STORAGE_REGION}.b-cdn.net/${fileName}`; // BunnyCDN URL
+    } else {
+      throw new Error("Failed to upload to BunnyCDN");
     }
-  );
-
-  worker.on("completed", async (job) => {
-    console.log(`Job ${job.id} completed`);
-  });
-
-  worker.on("failed", (job, err) => {
-    console.error(`Job ${job.id} failed with ${err.message}`);
-  });
+  } catch (error) {
+    console.error("BunnyCDN Upload Error:", error.message);
+    throw error;
+  }
 }
 
-module.exports = {
-  uploadQueue,
-  uploadQueueWorker,
-};
+module.exports = uploadToBunny;

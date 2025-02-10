@@ -42,50 +42,49 @@ app.use("/api/v1", adminAuthRoutes);
 // app.use("/api/v1", adminUserRoutes);
 
 /*===================================================USER ROUTES===================================================== */
-// const userAuthRoutes = require("./user/routes/userAuth.routes");
-// const userNotificationRoutes = require("./user/routes/userNotification.routes");
+const userAuthRoutes = require("./user/routes/userAuth.routes");
+const userNotificationRoutes = require("./user/routes/userNotification.routes");
 
-// app.use("/api/v1", userAuthRoutes);
-// app.use("/api/v1", userNotificationRoutes);
+app.use("/api/v1", userAuthRoutes);
+app.use("/api/v1", userNotificationRoutes);
 
 /*===================================================OTHER ROUTES===================================================== */
-// const packageRoutes = require("./common/routes/package.routes");
-// const visaCategoryRoutes = require("./common/routes/visaCategory.routes");
-// const notesRoutes = require("./common/routes/notes.routes");
+const packageRoutes = require("./common/routes/package.routes");
+const visaCategoryRoutes = require("./common/routes/visaCategory.routes");
+const notesRoutes = require("./common/routes/notes.routes");
 // const pageTypeRoutes = require("./common/routes/pageType.routes");
-// const partnerRoutes = require("./common/routes/partner.routes");
+const partnerRoutes = require("./common/routes/partner.routes");
 // const orderDetailsRoutes = require("./common/routes/orderDetails.routes");
 // const paymentRoutes = require("./common/routes/payment.routes");
 // const dashboardRouter = require("./common/routes/dashboard.routes");
 // const packageNotesRoutes = require("./common/routes/packageNotes.routes");
 // const subscriptionRoutes = require("./common/routes/subscription.routes");
-// const documentRoutes = require("./common/routes/document.routes");
-// const tourTypesRoutes = require("./common/routes/tourTypes.routes");
-// const blogRoutes = require("./common/routes/blog.routes");
-// const pagesRoutes = require("./common/routes/pages.routes");
-// const careerRoutes = require("./common/routes/career.routes");
-// const travelAgentRoutes = require("./common/routes/travelAgent.routes");
-// const aboutRoutes = require("./common/routes/about.routes");
-// const contactRoutes = require("./common/routes/contact.routes");
+const documentRoutes = require("./common/routes/document.routes");
+const tourTypesRoutes = require("./common/routes/tourTypes.routes");
+const blogRoutes = require("./common/routes/blog.routes");
+const pagesRoutes = require("./common/routes/pages.routes");
+const careerRoutes = require("./common/routes/career.routes");  
+const aboutRoutes = require("./common/routes/about.routes");
+const contactRoutes = require("./common/routes/contact.routes");
 
-// app.use("/api/v1", packageRoutes);
-// app.use("/api/v1", visaCategoryRoutes);
-// app.use("/api/v1", notesRoutes);
+app.use("/api/v1", packageRoutes);
+app.use("/api/v1", visaCategoryRoutes);
+app.use("/api/v1", notesRoutes);
 // app.use("/api/v1", pageTypeRoutes);
-// app.use("/api/v1", partnerRoutes);
+app.use("/api/v1", partnerRoutes);
 // app.use("/api/v1", orderDetailsRoutes);
-// app.use("/api/v1", paymentRoutes);
-// app.use("/api/v1", dashboardRouter);
+// app.use("/api/v1", paymentRoutes); // TODO
+// app.use("/api/v1", dashboardRouter);// TODO
 // app.use("/api/v1", packageNotesRoutes);
 // app.use("/api/v1", subscriptionRoutes);
-// app.use("/api/v1", documentRoutes);
-// app.use("/api/v1", tourTypesRoutes);
-// app.use("/api/v1", blogRoutes);
-// app.use("/api/v1", pagesRoutes);
-// app.use("/api/v1", careerRoutes);
-// app.use("/api/v1", aboutRoutes);
+app.use("/api/v1", documentRoutes);
+app.use("/api/v1", tourTypesRoutes);
+app.use("/api/v1", blogRoutes);
+app.use("/api/v1", pagesRoutes);
+app.use("/api/v1", careerRoutes);
+app.use("/api/v1", aboutRoutes);
 // app.use("/api/v1", travelAgentRoutes);
-// app.use("/api/v1", contactRoutes);
+app.use("/api/v1", contactRoutes);
 
 /*===================================================QUEUE WORKER===================================================== */
 // const { notificationQueueWorker } = require("./queue/notification.queue");

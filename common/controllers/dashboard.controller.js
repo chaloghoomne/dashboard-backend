@@ -5,6 +5,7 @@ const VisaOrder = require("../models/visaOrder.model");
 module.exports = {
   async getTopPackages(req, res) {
     try {
+      console.log("Getting top packages");
       // Aggregate Visa Orders to count the number of orders for each visaCategory
       const topVisaCategories = await VisaOrder.aggregate([
         {

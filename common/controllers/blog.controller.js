@@ -1,9 +1,10 @@
-const { notificationQueue } = require("../../queue/notification.queue");
+// const { notificationQueue } = require("../../queue/notification.queue");
 const User = require("../../user/models/user.model");
 const paginate = require("../../utils/paginate");
 const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const Blog = require("../models/blog.model");
+const mongoose  = require("mongoose");
 
 module.exports = {
   async addBlog(req, res) {
@@ -55,13 +56,13 @@ module.exports = {
       const users = await User.find({ isBlocked: { $ne: true } }).select("_id");
       const userIds = users.map((user) => user._id.toString());
 
-      const jobId = `notification-${Date.now()}`;
-      await notificationQueue.add(jobId, {
-        title: "New Blog Added",
-        body: "A new blog has been added. Check it out!",
-        image: null,
-        userIds: userIds,
-      });
+      // const jobId = `notification-${Date.now()}`;
+      // await notificationQueue.add(jobId, {
+      //   title: "New Blog Added",
+      //   body: "A new blog has been added. Check it out!",
+      //   image: null,
+      //   userIds: userIds,
+      // });
 
       return res.status(200).json({
         message: "Blog added successfully",
@@ -221,27 +222,42 @@ module.exports = {
 
   async deleteBlog(req, res) {
     try {
-      const id = req.params.id;
-      const blog = await Blog.findByIdAndDelete(id);
-
-      if (!blog) {
-        return res.status(404).json({
-          message: "Blog not found",
-          success: false,
-        });
+      console.log("================================");
+      const { id } = req.params;
+      console.log("Received ID:", id)
+      
+      // Validate ObjectId before proceeding
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+          return res.status(400).json({
+              message: "Invalid Blog ID",
+              success: false,
+          });
       }
 
-      return res.status(200).json({
-        message: "Blog deleted successfully",
-        data: blog,
-        success: true,
-      });
+      // Find and delete the blog
+      const blog = await Blog.findByIdAndDelete(id);
+      console.log("Blog deleted:", blog);
+
+        if (!blog) {
+            return res.status(404).json({
+                message: "Blog not found",
+                success: false,
+            });
+        }
+
+        return res.status(200).json({
+            message: "Blog deleted successfully",
+            data: blog,
+            success: true,
+        });
     } catch (error) {
-      return res.status(500).json({
-        error: error.message,
-        message: "Internal Server Error",
-        success: false,
-      });
+        console.error("Delete Blog Error:", error);
+        return res.status(500).json({
+            error: error.message,
+            message: "Internal Server Error",
+            success: false,
+        });
     }
-  },
+}
+
 };

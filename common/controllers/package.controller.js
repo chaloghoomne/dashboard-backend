@@ -1,8 +1,8 @@
 const Package = require("../models/package.model");
 const packageValidators = require("../../validators/package.validators");
 const paginate = require("../../utils/paginate");
-const { uploadQueue } = require("../../queue/upload.queue");
-const uploadImages = require("../../utils/uploadImages");
+// const { uploadQueue } = require("../../queue/upload.queue");
+// const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {
@@ -133,6 +133,7 @@ module.exports = {
 
   async getPackages(req, res) {
     try {
+      console.log("inside get packages", req)
       const { page, limit, country } = req.query; // Default page and limit
       const { skip, take } = paginate(page, limit);
 
