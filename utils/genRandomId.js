@@ -10,7 +10,7 @@ function genRandomId(prefix) {
 
     return userId;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error("Error generating user id");
   }
 }

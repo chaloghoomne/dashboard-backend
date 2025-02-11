@@ -35,11 +35,11 @@ app.use(express.json());
 /*===================================================ADMIN ROUTES===================================================== */
 const adminAuthRoutes = require("./admin/routes/adminAuth.routes");
 // const adminNotificationRoutes = require("./admin/routes/adminNotification.routes");
-// const adminUserRoutes = require("./admin/routes/adminUsers.routes");
+const adminUserRoutes = require("./admin/routes/adminUsers.routes");
 
 app.use("/api/v1", adminAuthRoutes);
 // app.use("/api/v1", adminNotificationRoutes);
-// app.use("/api/v1", adminUserRoutes);
+app.use("/api/v1", adminUserRoutes);
 
 /*===================================================USER ROUTES===================================================== */
 const userAuthRoutes = require("./user/routes/userAuth.routes");
@@ -52,13 +52,13 @@ app.use("/api/v1", userNotificationRoutes);
 const packageRoutes = require("./common/routes/package.routes");
 const visaCategoryRoutes = require("./common/routes/visaCategory.routes");
 const notesRoutes = require("./common/routes/notes.routes");
-// const pageTypeRoutes = require("./common/routes/pageType.routes");
+const pageTypeRoutes = require("./common/routes/pageType.routes");
 const partnerRoutes = require("./common/routes/partner.routes");
-// const orderDetailsRoutes = require("./common/routes/orderDetails.routes");
-// const paymentRoutes = require("./common/routes/payment.routes");
-// const dashboardRouter = require("./common/routes/dashboard.routes");
-// const packageNotesRoutes = require("./common/routes/packageNotes.routes");
-// const subscriptionRoutes = require("./common/routes/subscription.routes");
+const orderDetailsRoutes = require("./common/routes/orderDetails.routes");
+const paymentRoutes = require("./common/routes/payment.routes");
+const dashboardRouter = require("./common/routes/dashboard.routes");
+const packageNotesRoutes = require("./common/routes/packageNotes.routes");
+const subscriptionRoutes = require("./common/routes/subscription.routes");
 const documentRoutes = require("./common/routes/document.routes");
 const tourTypesRoutes = require("./common/routes/tourTypes.routes");
 const blogRoutes = require("./common/routes/blog.routes");
@@ -70,13 +70,13 @@ const contactRoutes = require("./common/routes/contact.routes");
 app.use("/api/v1", packageRoutes);
 app.use("/api/v1", visaCategoryRoutes);
 app.use("/api/v1", notesRoutes);
-// app.use("/api/v1", pageTypeRoutes);
+app.use("/api/v1", pageTypeRoutes);
 app.use("/api/v1", partnerRoutes);
-// app.use("/api/v1", orderDetailsRoutes);
-// app.use("/api/v1", paymentRoutes); // TODO
-// app.use("/api/v1", dashboardRouter);// TODO
-// app.use("/api/v1", packageNotesRoutes);
-// app.use("/api/v1", subscriptionRoutes);
+app.use("/api/v1", orderDetailsRoutes);
+app.use("/api/v1", paymentRoutes); // TODO
+app.use("/api/v1", dashboardRouter);// TODO
+app.use("/api/v1", packageNotesRoutes);
+app.use("/api/v1", subscriptionRoutes);
 app.use("/api/v1", documentRoutes);
 app.use("/api/v1", tourTypesRoutes);
 app.use("/api/v1", blogRoutes);

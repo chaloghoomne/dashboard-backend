@@ -133,7 +133,7 @@ module.exports = {
         success: true,
       });
     } catch (error) {
-      console.log(error);
+      console.log("Erroe in Visa Order");
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",
@@ -392,7 +392,7 @@ module.exports = {
         totalPages,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",
@@ -507,7 +507,7 @@ module.exports = {
           field: "document",
         });
       }
-      console.log(documents);
+      // console.log(documents);
 
       if (documents.length > 0) {
         uploadImages(documents)
@@ -589,7 +589,7 @@ module.exports = {
         totalPages,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",

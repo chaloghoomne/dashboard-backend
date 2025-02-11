@@ -126,7 +126,7 @@ module.exports = {
 				});
 			}
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			return res.status(500).json({
 				error: error.message,
 				message: "Internal Server Error",

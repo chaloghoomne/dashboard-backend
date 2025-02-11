@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const adminNotificationController = require("../controllers/adminNotification.controller");
 const { upload } = require("../../utils/upload");
+const adminNotificationController = require("../controllers/adminNotification.controller")
 
 router.post(
   "/admin-send-notification",

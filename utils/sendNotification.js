@@ -50,7 +50,7 @@ const notificationRequest = async (token, notification) => {
       body: JSON.stringify(configs.data),
     });
     const response = await result.json();
-    console.log("Response:", response);
+    // console.log("Response:", response);
 
     return response;
   } catch (error) {
@@ -80,7 +80,7 @@ async function sendNotification(title, body, image, deviceToken) {
     return response;
     // console.log("Notification Response:", JSON.stringify(response.data));
   } catch (error) {
-    console.log("Error:", JSON.stringify(error));
+    // console.log("Error:", JSON.stringify(error));
   }
 }
 

@@ -1,7 +1,7 @@
 const VisaCategory = require("../models/visaCategory.model");
 const paginate = require("../../utils/paginate");
 // const { uploadQueue } = require("../../queue/upload.queue");
-// const uploadImages = require("../../utils/uploadImages");
+const uploadImages = require("../../utils/uploadImages");
 const Package = require("../models/package.model");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
@@ -67,6 +67,7 @@ module.exports = {
 						// Handle the results as needed
 					})
 					.catch((error) => {
+						condol.log("dikkat yaha hai")
 						console.error("Error in batch upload:", error);
 					});
 			}

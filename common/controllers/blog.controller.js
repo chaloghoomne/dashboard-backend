@@ -70,7 +70,7 @@ module.exports = {
         success: true,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",
@@ -222,9 +222,9 @@ module.exports = {
 
   async deleteBlog(req, res) {
     try {
-      console.log("================================");
+      // console.log("================================");
       const { id } = req.params;
-      console.log("Received ID:", id)
+      // console.log("Received ID:", id)
       
       // Validate ObjectId before proceeding
       if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -236,7 +236,7 @@ module.exports = {
 
       // Find and delete the blog
       const blog = await Blog.findByIdAndDelete(id);
-      console.log("Blog deleted:", blog);
+      // console.log("Blog deleted:", blog);
 
         if (!blog) {
             return res.status(404).json({

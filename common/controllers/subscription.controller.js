@@ -1,6 +1,6 @@
 const Subscription = require("../models/subscription.model");
 const paginate = require("../..//utils/paginate");
-const { notificationQueue } = require("../../queue/notification.queue");
+// const { notificationQueue } = require("../../queue/notification.queue");
 
 module.exports = {
   async addSubscription(req, res) {

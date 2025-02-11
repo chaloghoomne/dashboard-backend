@@ -32,7 +32,7 @@ module.exports = {
         message: "Order placed successfully",
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",
@@ -57,7 +57,7 @@ module.exports = {
         });
       }
 
-      console.log(paymentDoc[0].orderId);
+      // console.log(paymentDoc[0].orderId);
       const payment = await instance.orders.fetchPayments(
         paymentDoc[0].orderId
       );
@@ -94,7 +94,7 @@ module.exports = {
         message: "Payment verified successfully",
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",

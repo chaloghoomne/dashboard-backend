@@ -14,7 +14,7 @@ module.exports = {
   async userSignup(req, res) {
     try {
       const data = req.body;
-      console.log(data);
+      // console.log(data);
       const otpDoc = await OTP.findOne({ email: data.email });
 
       const phoneVerificationDoc = await userVerification.findOne({
@@ -26,7 +26,7 @@ module.exports = {
           .status(400)
           .json({ message: "Email not verified", success: false });
       }
-      console.log(otpDoc)
+      // console.log(otpDoc)
       if (!phoneVerificationDoc && !phoneVerificationDoc?.isPhoneVerified) {
         return res
           .status(400)
@@ -51,7 +51,7 @@ module.exports = {
           success: false,
         });
       }
-      console.log(checkEmailExist, checkPhoneNumberExist);
+      // console.log(checkEmailExist, checkPhoneNumberExist);
       data.userId = genRandomId("CG");
       data.password = await bcrypt.hash(data.password, 10);
       const user = await User.create(data);
@@ -96,7 +96,7 @@ The Chalo Ghoomne Team
       const user = await User.findOne({
         $or: [{ email: credential }, { phoneNumber: credential }],
       });
-      console.log(user);
+      // console.log(user);
       if (!user) {
         return res.status(404).json({
           message: "User not found",
@@ -121,7 +121,7 @@ The Chalo Ghoomne Team
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
-      console.log(isMatch)
+      // console.log(isMatch)
 
       if (!isMatch) {
         return res
@@ -129,7 +129,7 @@ The Chalo Ghoomne Team
           .json({ message: "Invalid Credentials", success: false });
       }
       const token = await genToken({ id: user._id });
-      console.log(token)
+      // console.log(token)
       await User.findByIdAndUpdate(user._id, { $set: { deviceToken, token } });
 
       return res.status(200).json({
@@ -425,9 +425,9 @@ The Chalo Ghoomne Team
   async userGoogleLogin(req, res) {
     try {
       const data = req.body;
-      console.log("data: ", data);
+      // console.log("data: ", data);
       const user = await User.findOne({ email: data.email });
-      console.log("user: ", user);
+      // console.log("user: ", user);
 
       if (user && user.googleAuth === false) {
         return res.status(400).json({
@@ -435,7 +435,7 @@ The Chalo Ghoomne Team
           success: false,
         });
       }
-      console.log("user: ", user);
+      // console.log("user: ", user);
       if (!user) {
         const createUser = await User.create({ ...data, googleAuth: true });
 
@@ -445,7 +445,7 @@ The Chalo Ghoomne Team
           otpExpiry: null,
           isEmailVerified: true,
         });
-        console.log("otp: ", otp);
+        // console.log("otp: ", otp);
         if (data.phoneNumber) {
           const userVerificationDoc = await userVerification.create({
             phoneNumber: data.phoneNumber,
@@ -454,7 +454,7 @@ The Chalo Ghoomne Team
             otpExpiry: null,
           });
         }
-        console.log("userVerificationDoc: ", userVerificationDoc);
+        // console.log("userVerificationDoc: ", userVerificationDoc);
         const token = await genToken({ id: createUser._id, isUser: true });
         return res.status(201).json({
           data: token,
@@ -662,7 +662,7 @@ The Chalo Ghoomne Team
       };
 
       const mail = await sendMail(mailOptions);
-      console.log(mail);
+      // console.log(mail);
 
       if (!mail) {
         return res.status(500).json({

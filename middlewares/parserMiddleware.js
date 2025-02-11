@@ -18,7 +18,7 @@ function parseToJson(req, res, next) {
 
         if (typeof parsedData === "object" && parsedData !== null) {
           req.body = parsedData;
-          console.log("Parsed Data: ", req.body);
+          // console.log("Parsed Data: ", req.body);
           return next();
         } else {
           throw new Error("Parsed data is not a valid object.");
