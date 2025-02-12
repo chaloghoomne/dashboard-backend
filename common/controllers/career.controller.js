@@ -1,18 +1,14 @@
 const Career = require("../models/carrer.model");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const paginate = require("../../utils/paginate");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const sendMail = require("../../utils/sendMail");
-// const { notificationQueue } = require("../../queue/notification.queue");
 
 module.exports = {
   async addCareer(req, res) {
     try {
       let data = req.body;
-      const resume =
-        req.files && req.files.documents ? req.files.documents[0] : null;
-
-      let url = null;
+      const resume = req.files?.documents?.[0] || null;
 
       if (resume) {
         const fileBuffer = resume.buffer;
@@ -36,39 +32,6 @@ module.exports = {
 
       await sendMail(mailData);
 
-      // let images = [];
-
-      // if (resume) {
-      //   images.push({
-      //     buffer: resume.buffer,
-      //     originalname: resume.originalname,
-      //     mimetype: resume.mimetype,
-      //     filename: resume.filename,
-      //     id: career._id,
-      //     modelName: "Career",
-      //     field: "resume",
-      //   });
-      // }
-
-      // if (images.length > 0) {
-      //   uploadImages(images)
-      //     .then((results) => {
-      //       console.log("All uploads completed", results);
-      //       // Handle the results as needed
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error in batch upload:", error);
-      //     });
-      // }
-
-      const jobId = `notification-${Date.now()}`;
-      await notificationQueue.add(jobId, {
-        title: "New Career Submission Added",
-        body: "A new career form has been submitted. Check it out!",
-        image: null,
-        adminId: true,
-      });
-
       return res.status(201).json({
         message: "Career created successfully",
         success: true,
@@ -85,18 +48,11 @@ module.exports = {
 
   async editCareer(req, res) {
     try {
-      const { id } = req.params.id;
-
-      const data = req.body;
-      const resume =
-        req.files && req.files.documents ? req.files.documents[0] : null;
-
-      let url = null;
-
-      let career;
-
-      career = await Career.findById(id);
-
+      const { id } = req.params;
+      let data = req.body;
+      const resume = req.files?.documents?.[0] || null;
+      
+      let career = await Career.findById(id);
       if (!career) {
         return res.status(404).json({
           message: "Career not found",
@@ -113,34 +69,9 @@ module.exports = {
         }
       }
 
-      career = await Career.findById(id);
+      career = await Career.findByIdAndUpdate(id, data, { new: true });
 
-      // let images = [];
-
-      // if (resume) {
-      //   images.push({
-      //     buffer: resume.buffer,
-      //     originalname: resume.originalname,
-      //     mimetype: resume.mimetype,
-      //     filename: resume.filename,
-      //     id: id,
-      //     modelName: "Career",
-      //     field: "resume",
-      //   });
-      // }
-
-      // if (images.length > 0) {
-      //   uploadImages(images)
-      //     .then((results) => {
-      //       console.log("All uploads completed", results);
-      //       // Handle the results as needed
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error in batch upload:", error);
-      //     });
-      // }
-
-      return res.status(201).json({
+      return res.status(200).json({
         message: "Career updated successfully",
         success: true,
         data: career,
@@ -191,7 +122,6 @@ module.exports = {
   async getCareerById(req, res) {
     try {
       const { id } = req.params;
-
       const career = await Career.findById(id);
 
       if (!career) {
@@ -218,7 +148,6 @@ module.exports = {
   async deleteCareer(req, res) {
     try {
       const { id } = req.params;
-
       const career = await Career.findByIdAndDelete(id);
 
       if (!career) {

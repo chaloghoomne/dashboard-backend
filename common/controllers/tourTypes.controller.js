@@ -1,7 +1,7 @@
 const paginate = require("../../utils/paginate");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const TourType = require("../models/tourTypes.model");
-const uploadToS3 = require("../../utils/uploadToS3");
+// const uploadToS3 = require("../../utils/uploadToS3");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {

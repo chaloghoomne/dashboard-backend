@@ -4,7 +4,7 @@ const AdminNotification = require("../models/adminNotification.model");
 const adminValidator = require("../../validators/admin.validators");
 const paginate = require("../../utils/paginate");
 const { notificationQueue } = require("../../queue/notification.queue");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {

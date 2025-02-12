@@ -3,7 +3,7 @@ const genToken = require("../../utils/genToken");
 const bcrypt = require("bcrypt");
 const adminValidator = require("../../validators/admin.validators");
 const sendMail = require("../../utils/sendMail");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {

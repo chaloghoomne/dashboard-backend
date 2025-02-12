@@ -4,7 +4,7 @@ const { uploadQueue } = require("../../queue/upload.queue");
 const VisaCategory = require("../models/visaCategory.model");
 const Package = require("../models/package.model");
 const paginate = require("../../utils/paginate");
-const uploadImages = require("../../utils/uploadImages");
+// Removed uploadImages in favor of using uploadToBunny for all file uploads
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {
@@ -91,7 +91,7 @@ module.exports = {
       const visaOrder = await Promise.all(
         result.map(async (order) => {
           if (order?.visaCategory?.package) {
-            const { country, tourTypes } = order?.visaCategory?.package;
+            const { country, tourTypes } = order.visaCategory.package;
             const tourType = tourTypes.find(
               (item) =>
                 item._id?.toString() === order.visaCategory.tourType?.toString()
@@ -133,7 +133,7 @@ module.exports = {
         success: true,
       });
     } catch (error) {
-      console.log("Erroe in Visa Order");
+      console.log("Error in Visa Order");
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",
@@ -149,9 +149,7 @@ module.exports = {
       const orderDetails = await OrderDetails.countDocuments({
         visaOrder: visaOrderId,
       });
-      const visaCategory = await VisaCategory.findById(
-        visaOrder.visaCategory
-      ).select("childPrice");
+      const visaCategory = await VisaCategory.findById(visaOrder.visaCategory).select("childPrice");
 
       return res.status(200).json({
         data: { visaOrder, orderDetails, visaCategory },
@@ -170,8 +168,7 @@ module.exports = {
   async addOrderDetails(req, res) {
     try {
       const data = req.body;
-      const documents =
-        req.files && req.files.documents ? req.files.documents : [];
+      const documents = req.files && req.files.documents ? req.files.documents : [];
       data.user = req.user.id;
 
       // Create the OrderDetails document
@@ -200,9 +197,7 @@ module.exports = {
               image: uploadResult.cdnUrl,
             });
           } else {
-            throw new Error(
-              `Failed to upload document: ${document.originalname}`
-            );
+            throw new Error(`Failed to upload document: ${document.originalname}`);
           }
         }
 
@@ -230,9 +225,7 @@ module.exports = {
   async getOrderDetailsByVisaOrder(req, res) {
     try {
       const { visaOrderId } = req.params;
-      const orderDetails = await OrderDetails.find({
-        visaOrder: visaOrderId,
-      }).populate("visaOrder");
+      const orderDetails = await OrderDetails.find({ visaOrder: visaOrderId }).populate("visaOrder");
 
       return res.status(200).json({
         data: orderDetails,
@@ -271,8 +264,7 @@ module.exports = {
       const { id } = req.params;
       const data = req.body;
 
-      const documents =
-        req.files && req.files.documents ? req.files.documents : [];
+      const documents = req.files && req.files.documents ? req.files.documents : [];
       const updatedDocuments = [];
 
       // Update basic order details
@@ -305,9 +297,7 @@ module.exports = {
               image: uploadResult.cdnUrl,
             });
           } else {
-            throw new Error(
-              `Failed to upload document: ${document.originalname}`
-            );
+            throw new Error(`Failed to upload document: ${document.originalname}`);
           }
         }
 
@@ -359,7 +349,7 @@ module.exports = {
       const totalPages = Math.ceil(totalItems / take);
       let startNumber;
       let visaOrders;
-      if (page && page !== undefined && page !== null) {
+      if (page !== undefined && page !== null) {
         startNumber = (page - 1) * take + 1;
         visaOrders = await VisaOrder.find(query)
           .populate("user")
@@ -392,7 +382,6 @@ module.exports = {
         totalPages,
       });
     } catch (error) {
-      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",
@@ -407,8 +396,7 @@ module.exports = {
       let { index } = req.body;
       index = Number(index);
 
-      const documents =
-        req.files && req.files.documents ? req.files.documents : [];
+      const documents = req.files && req.files.documents ? req.files.documents : [];
       const documentName = req.body[`documents[${index}][name]`];
 
       if (!documentName) {
@@ -486,10 +474,7 @@ module.exports = {
     try {
       const { id } = req.params;
       const { description, status } = req.body;
-      const document =
-        req.files && req.files.documents ? req.files.documents[0] : null;
-      let documents = [];
-
+      const document = req.files && req.files.documents ? req.files.documents[0] : null;
       let updatdeData = { status };
 
       if (description) {
@@ -497,39 +482,22 @@ module.exports = {
       }
 
       if (document) {
-        documents.push({
-          buffer: document.buffer,
-          originalname: document.originalname,
-          mimetype: document.mimetype,
-          filename: document.filename,
-          id: id,
-          modelName: "VisaOrder",
-          field: "document",
-        });
-      }
-      // console.log(documents);
-
-      if (documents.length > 0) {
-        uploadImages(documents)
-          .then((results) => {
-            console.log("All uploads completed", results);
-          })
-          .catch((error) => {
-            console.error("Error in batch upload:", error);
-          });
+        // Upload document to Bunny.net directly
+        const fileBuffer = document.buffer;
+        const fileName = `${Date.now()}-${document.originalname}`;
+        const uploadResult = await uploadToBunny(fileBuffer, fileName);
+        if (uploadResult.success) {
+          updatdeData.document = uploadResult.cdnUrl;
+        } else {
+          throw new Error(`Failed to upload document: ${document.originalname}`);
+        }
       }
 
       const visaOrder = await VisaOrder.findByIdAndUpdate(id, updatdeData, {
         new: true,
       });
 
-      const jobId = `notification-${Date.now()}`;
-      await notificationQueue.add(jobId, {
-        title: "Visa Order Updated",
-        body: `Your visa order has been updated. Check it out!`,
-        image: null,
-        userIds: [visaOrder.user],
-      });
+      // If needed, add notifications using uploadQueue or similar here
 
       return res.status(200).json({
         data: visaOrder,
@@ -556,7 +524,7 @@ module.exports = {
       const totalPages = Math.ceil(totalItems / take);
       let startNumber;
       let visaOrders;
-      if (page && page !== undefined && page !== null) {
+      if (page !== undefined && page !== null) {
         startNumber = (page - 1) * take + 1;
         visaOrders = await VisaOrder.find()
           .populate("user")
@@ -589,7 +557,6 @@ module.exports = {
         totalPages,
       });
     } catch (error) {
-      // console.log(error);
       return res.status(500).json({
         error: error.message,
         message: "Internal Server Error",

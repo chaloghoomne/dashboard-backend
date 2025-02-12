@@ -1,7 +1,6 @@
 const Partner = require("../models/partner.model");
 const { uploadQueue } = require("../../queue/upload.queue");
 const paginate = require("../../utils/paginate");
-const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {
@@ -24,31 +23,6 @@ module.exports = {
 
       const partner = await Partner.create(data);
 
-      // const images = [];
-
-      // if (image) {
-      //   images.push({
-      //     buffer: image.buffer,
-      //     originalname: image.originalname,
-      //     mimetype: image.mimetype,
-      //     filename: image.filename,
-      //     id: partner._id,
-      //     modelName: "Partner",
-      //     field: "image",
-      //   });
-      // }
-
-      // if (images.length > 0) {
-      //   uploadImages(images)
-      //     .then((results) => {
-      //       console.log("All uploads completed", results);
-      //       // Handle the results as needed
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error in batch upload:", error);
-      //     });
-      // }
-
       return res.status(201).json({
         data: partner,
         success: true,
@@ -69,31 +43,17 @@ module.exports = {
       const data = req.body;
       const image = req.files && req.files.image ? req.files.image[0] : null;
 
-      const partner = await Partner.findByIdAndUpdate(id, data, { new: true });
-      const images = [];
-
+      // If an image is provided, upload it to BunnyCDN
       if (image) {
-        images.push({
-          buffer: image.buffer,
-          originalname: image.originalname,
-          mimetype: image.mimetype,
-          filename: image.filename,
-          id: id,
-          modelName: "Partner",
-          field: "image",
-        });
+        const fileBuffer = image.buffer;
+        const fileName = `${Date.now()}-${image.originalname}`;
+        const uploadImage = await uploadToBunny(fileBuffer, fileName);
+        if (uploadImage.success) {
+          data.image = uploadImage.cdnUrl;
+        }
       }
 
-      if (images.length > 0) {
-        uploadImages(images)
-          .then((results) => {
-            console.log("All uploads completed", results);
-            // Handle the results as needed
-          })
-          .catch((error) => {
-            console.error("Error in batch upload:", error);
-          });
-      }
+      const partner = await Partner.findByIdAndUpdate(id, data, { new: true });
 
       if (!partner) {
         return res.status(404).json({

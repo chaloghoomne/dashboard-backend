@@ -1,5 +1,5 @@
 const Pages = require("../models/pages.model");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 
 module.exports = {

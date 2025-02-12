@@ -1,7 +1,7 @@
 const Notes = require("../models/notes.model");
 const { uploadQueue } = require("../../queue/upload.queue");
 const paginate = require("../../utils/paginate");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const Package = require("../models/package.model");
 

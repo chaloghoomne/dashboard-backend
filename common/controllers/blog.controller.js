@@ -1,7 +1,7 @@
 // const { notificationQueue } = require("../../queue/notification.queue");
 const User = require("../../user/models/user.model");
 const paginate = require("../../utils/paginate");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const Blog = require("../models/blog.model");
 const mongoose  = require("mongoose");

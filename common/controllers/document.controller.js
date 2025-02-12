@@ -1,6 +1,6 @@
 const Document = require("../models/document.model");
 const VisaCategory = require("../models/visaCategory.model");
-const uploadImages = require("../../utils/uploadImages");
+// const uploadImages = require("../../utils/uploadImages");
 const paginate = require("../../utils/paginate");
 const uploadToS3 = require("../../utils/uploadToS3");
 const uploadToBunny = require("../../utils/uploadToBunny");
