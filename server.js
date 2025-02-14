@@ -34,7 +34,7 @@ app.use(express.json());
 
 /*===================================================ADMIN ROUTES===================================================== */
 const adminAuthRoutes = require("./admin/routes/adminAuth.routes");
-// const adminNotificationRoutes = require("./admin/routes/adminNotification.routes");
+const adminNotificationRoutes = require("./admin/routes/adminNotification.routes");
 const adminUserRoutes = require("./admin/routes/adminUsers.routes");
 
 app.use("/api/v1", adminAuthRoutes);
@@ -63,9 +63,10 @@ const documentRoutes = require("./common/routes/document.routes");
 const tourTypesRoutes = require("./common/routes/tourTypes.routes");
 const blogRoutes = require("./common/routes/blog.routes");
 const pagesRoutes = require("./common/routes/pages.routes");
-const careerRoutes = require("./common/routes/career.routes");  
+const careerRoutes = require("./common/routes/career.routes");
 const aboutRoutes = require("./common/routes/about.routes");
 const contactRoutes = require("./common/routes/contact.routes");
+const travelAgentRoutes = require("./common/routes/travelAgent.routes");
 
 app.use("/api/v1", packageRoutes);
 app.use("/api/v1", visaCategoryRoutes);
@@ -74,7 +75,7 @@ app.use("/api/v1", pageTypeRoutes);
 app.use("/api/v1", partnerRoutes);
 app.use("/api/v1", orderDetailsRoutes);
 app.use("/api/v1", paymentRoutes); // TODO
-app.use("/api/v1", dashboardRouter);// TODO
+app.use("/api/v1", dashboardRouter); // TODO
 app.use("/api/v1", packageNotesRoutes);
 app.use("/api/v1", subscriptionRoutes);
 app.use("/api/v1", documentRoutes);
@@ -83,7 +84,7 @@ app.use("/api/v1", blogRoutes);
 app.use("/api/v1", pagesRoutes);
 app.use("/api/v1", careerRoutes);
 app.use("/api/v1", aboutRoutes);
-// app.use("/api/v1", travelAgentRoutes);
+app.use("/api/v1", travelAgentRoutes);
 app.use("/api/v1", contactRoutes);
 
 /*===================================================QUEUE WORKER===================================================== */

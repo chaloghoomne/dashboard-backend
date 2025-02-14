@@ -5,6 +5,7 @@ const adminValidator = require("../../validators/admin.validators");
 const sendMail = require("../../utils/sendMail");
 // const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
 	async adminSignup(req, res) {
@@ -216,9 +217,17 @@ module.exports = {
 
 	async adminProfile(req, res) {
 		try {
-			const { userId } = req.user.id;
+			const token = req.headers.authorization?.split(" ")[1];
+			console.log(token)
+
+			const  decoded = jwt.verify(token, process.env.JWT_SECRET);
+			console.log(decoded.id)
+
+			const userId  = decoded.id;
+			console.log(userId);
 
 			const admin = await Admin.findById(userId);
+			// console.log(admin)
 
 			return res.status(200).json({
 				success: true,
@@ -236,23 +245,34 @@ module.exports = {
 
 	async adminEditProfile(req, res) {
 		try {
+			const token = req.body.token;
+			const decoded = jwt.decode(token, process.env.JWT_SECRET);
+			// console.log("tokenn: ", token);
+
+			const userId = decoded.id;
+			// console.log("decoded", userId);
+
 			let data = req.body;
-			const { userId } = req.user.id;
 			const image =
 				req.files && req.files.image ? req.files.image[0] : null;
 
 			if (image) {
 				const fileBuffer = image.buffer;
+
 				const fileName = `${Date.now()}-${image.originalname}`;
+
 				const uploadImage = await uploadToBunny(fileBuffer, fileName);
 				if (uploadImage.success) {
 					data.image = uploadImage.cdnUrl;
+					console.log("Image uploaded successfully");
 				}
 			}
+			// console.log("userId", userId);
 
 			const admin = await Admin.findByIdAndUpdate(userId, data, {
 				new: true,
 			});
+			// console.log("admin: ", admin.image);
 
 			// const images = [];
 
@@ -281,7 +301,7 @@ module.exports = {
 
 			return res.status(200).json({
 				success: true,
-				data: admin,
+				data: admin.image,
 				message: "Profile updated successfully",
 			});
 		} catch (error) {

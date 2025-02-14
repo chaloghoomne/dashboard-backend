@@ -49,6 +49,7 @@ module.exports = {
 
   async getTravelAgents(req, res) {
     try {
+      console.log("hhi Travel Agent",req);
       const { page, limit } = req.body;
       const { skip, take } = paginate(page, limit);
 
