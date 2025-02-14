@@ -45,12 +45,12 @@ module.exports = {
 					success: false,
 				});
 			}
-
-			// const isPasswordValid = await bcrypt.compare(
-			// 	data.password,
-			// 	admin.password
-			// );
-			const isPasswordValid = true;
+// agr dikkat aaye loginn me  to niche wali  teen comment kro aur phir ispasswordvalid uncommment karo
+			const isPasswordValid = await bcrypt.compare(
+				data.password,
+				admin.password
+			);
+			// const isPasswordValid = true;
 			// console.log("isPasswordValid: ", isPasswordValid);
 
 			if (!isPasswordValid) {

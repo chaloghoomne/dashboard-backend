@@ -5,7 +5,7 @@ const VisaOrder = require("../models/visaOrder.model");
 module.exports = {
   async getTopPackages(req, res) {
     try {
-      console.log("Getting top packages");
+      // console.log("Getting top packages");
       // Aggregate Visa Orders to count the number of orders for each visaCategory
       const topVisaCategories = await VisaOrder.aggregate([
         {
@@ -62,7 +62,7 @@ module.exports = {
 
   async topVisaCategories(req, res) {
     try {
-      console.log("Getting top visa categories");
+      // console.log("Getting top visa categories");
       const topVisaCategories = await VisaOrder.aggregate([
         {
           $group: {
@@ -83,7 +83,7 @@ module.exports = {
       const visaCategories = await VisaCategory.find({
         _id: { $in: visaCategoryIds },
       });
-      console.log("visaCategories: ", visaCategories);
+      // console.log("visaCategories: ", visaCategories);
 
       return res.status(200).json({
         data: visaCategories,
@@ -104,6 +104,7 @@ module.exports = {
       const maxAmountOrder = await VisaOrder.findOne()
         .sort({ totalAmount: -1 })
         .limit(1);
+      console.log("maxAmountOrder: ", maxAmountOrder);
 
       return res.status(200).json({
         data: maxAmountOrder,
