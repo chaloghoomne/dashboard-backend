@@ -23,7 +23,7 @@ const uploadToBunny = async (file, fileName) => {
       body: file,
     });
 
-    console.log("response", response);
+    // console.log("response", response);
     if (!response.ok) {
       throw new Error(`Upload failed: ${response.statusText}`);
     }

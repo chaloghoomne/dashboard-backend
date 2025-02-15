@@ -76,7 +76,7 @@ async function sendNotification(title, body, image, deviceToken) {
 
   try {
     const response = await notificationRequest(access_token, notification);
-    console.log("Notification Response:", response);
+    // console.log("Notification Response:", response);
     return response;
     // console.log("Notification Response:", JSON.stringify(response.data));
   } catch (error) {

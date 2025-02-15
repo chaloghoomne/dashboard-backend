@@ -11,6 +11,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 // app.use(decryptionMiddleware);
 // app.use(parserMiddleware);
 
@@ -67,6 +69,7 @@ const careerRoutes = require("./common/routes/career.routes");
 const aboutRoutes = require("./common/routes/about.routes");
 const contactRoutes = require("./common/routes/contact.routes");
 const travelAgentRoutes = require("./common/routes/travelAgent.routes");
+const getImagesRoues = require("./common/routes/getImages.routes");
 
 app.use("/api/v1", packageRoutes);
 app.use("/api/v1", visaCategoryRoutes);
@@ -86,6 +89,7 @@ app.use("/api/v1", careerRoutes);
 app.use("/api/v1", aboutRoutes);
 app.use("/api/v1", travelAgentRoutes);
 app.use("/api/v1", contactRoutes);
+app.use("/api/v1", getImagesRoues);
 
 /*===================================================QUEUE WORKER===================================================== */
 // const { notificationQueueWorker } = require("./queue/notification.queue");

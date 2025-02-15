@@ -6,6 +6,7 @@ const sendMail = require("../../utils/sendMail");
 // const uploadImages = require("../../utils/uploadImages");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const jwt = require("jsonwebtoken");
+const decryptionMiddleware = require("../../utils/chunkUpload");
 
 module.exports = {
 	async adminSignup(req, res) {
@@ -139,9 +140,11 @@ module.exports = {
 	async adminResetPassword(req, res) {
 		try {
 			const data = req.body;
+			console.log("password data",data)
 
 			// Check if the new passwords match
-			if (data.newPassword !== data.confirmPassword) {
+			console.log(data.newPass, data.confirmPass)
+			if (data.newPass !== data.confirmPass) {
 				return res.status(400).json({
 					message: "Passwords do not match",
 					success: false,
@@ -158,7 +161,7 @@ module.exports = {
 			}
 
 			const isPasswordValid = bcrypt.compareSync(
-				data.oldPassword,
+				data.oldPass,
 				admin.password
 			);
 
@@ -170,7 +173,7 @@ module.exports = {
 			}
 
 			// Update the admin's password
-			admin.password = await bcrypt.hash(data.newPassword, 10);
+			admin.password = await bcrypt.hash(data.newPass, 10);
 			await admin.save();
 
 			return res.status(200).json({
@@ -189,7 +192,7 @@ module.exports = {
 	async adminChangePassword(req, res) {
 		try {
 			const data = req.body;
-
+			console.log("data",data)
 			const admin = await Admin.findOne({ email: data.email });
 
 			if (data.newPassword !== data.confirmPassword) {
@@ -218,13 +221,13 @@ module.exports = {
 	async adminProfile(req, res) {
 		try {
 			const token = req.headers.authorization?.split(" ")[1];
-			console.log(token)
+			// console.log(token)
 
 			const  decoded = jwt.verify(token, process.env.JWT_SECRET);
-			console.log(decoded.id)
+			// console.log(decoded.id)
 
 			const userId  = decoded.id;
-			console.log(userId);
+			// console.log(userId);
 
 			const admin = await Admin.findById(userId);
 			// console.log(admin)
@@ -264,7 +267,7 @@ module.exports = {
 				const uploadImage = await uploadToBunny(fileBuffer, fileName);
 				if (uploadImage.success) {
 					data.image = uploadImage.cdnUrl;
-					console.log("Image uploaded successfully");
+					// console.log("Image uploaded successfully");
 				}
 			}
 			// console.log("userId", userId);

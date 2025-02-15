@@ -133,7 +133,7 @@ module.exports = {
 
   async getPackages(req, res) {
     try {
-      console.log("inside get packages", req)
+      // console.log("inside get packages", req)
       const { page, limit, country } = req.query; // Default page and limit
       const { skip, take } = paginate(page, limit);
 

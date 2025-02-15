@@ -66,7 +66,7 @@ module.exports = {
           };
         });
       }
-      console.log("ASdasd", subscription);
+      // console.log("ASdasd", subscription);
       return res.status(200).json({
         data: subscription,
         message: "Subscriptions Fetched Successfully",

@@ -156,7 +156,7 @@ module.exports = {
 
   async getTourTypes(req, res) {
     try {
-      console.log("HI");
+      // console.log("HI");
       let { page, limit } = req.query;
       let { skip, take } = paginate(page, limit);
 

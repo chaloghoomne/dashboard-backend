@@ -83,7 +83,7 @@ module.exports = {
       const visaCategories = await VisaCategory.find({
         _id: { $in: visaCategoryIds },
       });
-      // console.log("visaCategories: ", visaCategories);
+      console.log("visaCategories: ", visaCategories.length);
 
       return res.status(200).json({
         data: visaCategories,
@@ -104,7 +104,7 @@ module.exports = {
       const maxAmountOrder = await VisaOrder.findOne()
         .sort({ totalAmount: -1 })
         .limit(1);
-      console.log("maxAmountOrder: ", maxAmountOrder);
+      // console.log("maxAmountOrder: ", maxAmountOrder);
 
       return res.status(200).json({
         data: maxAmountOrder,

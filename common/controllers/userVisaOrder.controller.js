@@ -138,7 +138,7 @@ module.exports = {
 				success: true,
 			});
 		} catch (error) {
-			console.log("Error in Visa Order");
+			// console.log("Error in Visa Order");
 			return res.status(500).json({
 				error: error.message,
 				message: "Internal Server Error",
@@ -360,13 +360,13 @@ module.exports = {
 			const { page, limit, status } = req.query;
 			const { skip, take } = paginate(page, limit);
 
-			console.log("page, limit, status: ", page, limit, status);
+			// console.log("page, limit, status: ", page, limit, status);
 
 			let query = { isSubmitted: true };
 
 			if (status === "approved" || status === "rejected") {
 				query.status = { $in: ["approved", "rejected"] };
-				console.log("Pending", status);
+				// console.log("Pending", status);
 			} else if (status === "pending" || status === "sent-back") {
 				query.status = { $in: ["pending", "sent-back"] };
 			} else if (status) {
@@ -507,9 +507,9 @@ module.exports = {
 		// sent-to-immigration
 		try {
 			const { id } = req.params;
-			console.log("req ki body: ", req.body);
+
 			const { description, status } = await req.body;
-			console.log("id desc: ", id, description, status);
+
 			const document =
 				req.files && req.files.documents
 					? req.files.documents[0]
