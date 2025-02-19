@@ -1,5 +1,5 @@
 const { Queue, Worker } = require("bullmq");
-const sendNotification = require("../utils/sendNotification");
+// const sendNotification = require("../utils/sendNotification");
 const UserNotification = require("./../user/models/userNotification.model");
 const AdminNotification = require("./../admin/models/adminNotification.model");
 const User = require("./../user/models/user.model");

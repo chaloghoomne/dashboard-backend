@@ -198,6 +198,7 @@ module.exports = {
       let id = req.params.id;
 
       const blog = await Blog.findById(id);
+      // console.log(blog)
 
       if (!blog) {
         return res.status(404).json({

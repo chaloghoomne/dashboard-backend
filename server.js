@@ -40,7 +40,7 @@ const adminNotificationRoutes = require("./admin/routes/adminNotification.routes
 const adminUserRoutes = require("./admin/routes/adminUsers.routes");
 
 app.use("/api/v1", adminAuthRoutes);
-// app.use("/api/v1", adminNotificationRoutes);
+app.use("/api/v1", adminNotificationRoutes);
 app.use("/api/v1", adminUserRoutes);
 
 /*===================================================USER ROUTES===================================================== */

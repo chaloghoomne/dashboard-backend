@@ -4,9 +4,9 @@ module.exports = {
 	async CountriesImage(req, res) {
 		try {
 			const country = req.body.country;
-			console.log(country);
+			// console.log(country);
 			const img = await Package.findOne({ country: country });
-            console.log("imghghg",img.image)
+            // console.log("imghghg",img.image)
 			return res.status(200).json({image:img.image});
 
 		} catch (error) {
