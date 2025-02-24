@@ -3,7 +3,7 @@ const userNotificationController = require("../controllers/userNotification.cont
 const auth = require("../../middlewares/auth");
 
 router.get(
-  "/notifications",
+  "/notification",
   auth,
   userNotificationController.getAllNotifications
 );

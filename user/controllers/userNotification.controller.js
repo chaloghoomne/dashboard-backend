@@ -1,27 +1,38 @@
 const UserNotification = require("../models/userNotification.model");
 const User = require("../models/user.model");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken")
 
 module.exports = {
   async getAllNotifications(req, res) {
     try {
-      const userId = req.user.id;
+      const header = req.headers.authorization.split(" ")[1];
+      console.log(header);
+      const userId = jwt.verify(header, process.env.JWT_SECRET);
+      const usersId = userId.id;
+      console.log(usersId);
 
       // Find all notifications that include the user's ID
-      const notifications = await UserNotification.find({ users: userId }).sort(
-        {
-          createdAt: -1,
-        }
-      );
+      // const notifications = await UserNotification.find({ users: userId }).sort(
+      //   {
+      //     createdAt: -1,
+      //   }
+      // );
 
-      const user = await User.findById(userId).select("unreadNotifications");
+      const notifications = await UserNotification.find({ users: usersId }).sort({ createdAt: -1 });
+
+      // console.log("Notification",notifications[1]);
+
+      const user = await User.findById(usersId).select("unreadNotifications");
+      console.log("user",user)
 
       const notificationData = notifications.map((notification) => {
         return {
           ...notification.toObject(),
-          isRead: !user.unreadNotifications.includes(notification._id),
+          isRead: !(user.unreadNotifications || []).map(id => id.toString()).includes(notification._id.toString()),
         };
       });
+      console.log("Response being sent:", notificationData);
 
       return res.status(200).json({
         data: notificationData,
