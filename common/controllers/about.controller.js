@@ -5,19 +5,17 @@ const uploadToBunny = require("../../utils/uploadToBunny");
 module.exports = {
 	async addAbout(req, res) {
 		try {
-			// console.log(req.body);
+			console.log(req.body);
 			const data = req.body;
 
 			if (data.sections) {
-				// console.log(data.sections)
+
 				data.sections = JSON.parse(data.sections);
 			}
-			// console.log("Iske AAge jao")
 			const image =
 				req.files && req.files.image ? req.files.image[0] : null;
 
 			let about = await About.findOne();
-
 			let imageUrl = null;
 
 			if (image) {
@@ -38,32 +36,6 @@ module.exports = {
 					{ new: true }
 				);
 			}
-
-			// let images = [];
-
-			// if (image) {
-			//   images.push({
-			//     buffer: image.buffer,
-			//     originalname: image.originalname,
-			//     mimetype: image.mimetype,
-			//     filename: image.filename,
-			//     id: about._id,
-			//     modelName: "About",
-			//     field: "image",
-			//   });
-			// }
-
-			// if (images.length > 0) {
-			//   uploadImages(images)
-			//     .then((results) => {
-			//       console.log("All uploads completed", results);
-			//       // Handle the results as needed
-			//     })
-			//     .catch((error) => {
-			//       console.error("Error in batch upload:", error);
-			//     });
-			// }
-
 			return res.status(201).json({
 				message: "About added successfully",
 				data: about,
