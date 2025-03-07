@@ -5,7 +5,7 @@ const uploadToBunny = require("../../utils/uploadToBunny");
 module.exports = {
 	async addAbout(req, res) {
 		try {
-			console.log(req.body);
+			// console.log(req.body);
 			const data = req.body;
 
 			if (data.sections) {
@@ -53,7 +53,7 @@ module.exports = {
 	async getAbout(req, res) {
 		try {
 			const about = await About.findOne();
-			console.log("about fn called: ", about);
+			// console.log("about fn called: ", about);
 
 			return res.status(200).json({
 				message: "About fetched successfully",
