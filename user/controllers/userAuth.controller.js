@@ -308,6 +308,7 @@ The Chalo Ghoomne Team
   async sendMobileOtp(req, res) {
     try {
       const { phoneNumber } = req.body;
+      // console.log(req.body)
 
       const existPhoneNumber = await User.findOne({ phoneNumber });
 
@@ -506,40 +507,90 @@ The Chalo Ghoomne Team
     }
   },
 
-  async verifyMobileOtp(req, res) {
-    try {
-      const { phoneNumber, otp } = req.body;
-      let checkVerifiedUser = await userVerification.findOne({
-        phoneNumber: phoneNumber,
-      });
+  // async verifyMobileOtp(req, res) {
+  //   try {
+  //     const { phoneNumber, otp } = req.body;
+  //     let checkVerifiedUser = await userVerification.findOne({
+  //       phoneNumber: phoneNumber,
+  //     });
 
-      if (!checkVerifiedUser) {
-        return res.status(400).json({
-          message: "User not found",
-          success: false,
-        });
-      }
+  //     if (!checkVerifiedUser) {
+  //       return res.status(400).json({
+  //         message: "User not found",
+  //         success: false,
+  //       });
+  //     }
 
-      if (checkVerifiedUser.otp !== otp) {
-        return res.status(400).json({
-          message: "Invalid OTP",
-          success: false,
-        });
-      }
-      checkVerifiedUser.isPhoneVerified = true;
-      await checkVerifiedUser.save();
-      return res.status(200).json({
-        success: true,
-        message: "OTP verified successfully",
-      });
-    } catch (error) {
-      return res.status(500).json({
-        error: error.message,
+  //     if (checkVerifiedUser.otp !== otp) {
+  //       return res.status(400).json({
+  //         message: "Invalid OTP",
+  //         success: false,
+  //       });
+  //     }
+  //     checkVerifiedUser.isPhoneVerified = true;
+  //     await checkVerifiedUser.save();
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "OTP verified successfully",
+  //     });
+  //   } catch (error) {
+  //     return res.status(500).json({
+  //       error: error.message,
+  //       success: false,
+  //       message: "Invalid Server Error",
+  //     });
+  //   }
+  // },
+
+async verifyMobileOtp(req, res) {
+  try {
+    console.log(req.body);
+    const { phoneNumber, otp, name} = req.body;
+
+    let user = await userVerification.findOne({ phoneNumber });
+    
+    let user1 = await User.findOne({ phoneNumber });
+    
+    if (!user) {
+      // If user doesn't exist, create a new user and store OTP verification details
+      user = new userVerification({ phoneNumber, otp, isPhoneVerified: false });
+      await user.save();
+    }
+    
+    if (!user1) {
+      // If user doesn't exist, create a new user and store OTP verification details
+      user1 = new User({ phoneNumber, otp, name});
+      await user1.save();
+    }
+
+    
+    // Check if OTP matches
+    if (user.otp !== otp) {
+      return res.status(400).json({
         success: false,
-        message: "Invalid Server Error",
+        message: "Invalid OTP",
       });
     }
-  },
+    
+    // Update phone verification status
+    user.isPhoneVerified = true;
+    await user.save();
+    
+    // Update the main user record as well
+    await userVerification.findOneAndUpdate({ phoneNumber }, { isPhoneVerified: true });
+    
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+},
 
   async userProfile(req, res) {
     try {
