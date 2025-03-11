@@ -2,11 +2,14 @@ const mongoose = require("mongoose");
 
 const blogsSchema = new mongoose.Schema(
   {
-    title: String,
-    imageUrl: String,
-    description: String,
-    publisher: String,
-    readingTime: Number,
+    title: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    description: { type: String, required: true },
+    publisher: { type: String, required: true },
+    readingTime: { type: Number, required: true },
+    metaTitle: { type: String, default: "" },
+    metaDescription: { type: String, default: "" },
+    metaKeywords: { type: [String], default: [] },
   },
   { timestamps: true }
 );
