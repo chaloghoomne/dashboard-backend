@@ -10,7 +10,7 @@ router.post("/user-reset-password", userAuthController.userResetPassword);
 router.post("/user-change-password", userAuthController.userChangePassword);
 router.post("/user-google-login", userAuthController.userGoogleLogin);
 router.post("/user-verify-number", userAuthController.verifyMobileOtp);
-router.get("/user-profile", auth, userAuthController.userProfile);
+router.get("/user-profile", userAuthController.userProfile);
 router.post("/user-forgot-password", userAuthController.userForgotPassword);
 router.put(
   "/user-edit-profile/:id",

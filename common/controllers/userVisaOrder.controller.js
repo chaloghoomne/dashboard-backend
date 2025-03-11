@@ -10,9 +10,10 @@ const uploadToBunny = require("../../utils/uploadToBunny");
 module.exports = {
 	async createVisaOrder(req, res) {
 		try {
+			// console.log("Request to aa rahi hai", req.body);
 			const data = req.body;
 			const visaCategory = await VisaCategory.findById(data.visaCategory);
-
+			// console.log("Ye hai visa category", visaCategory);
 			if (!visaCategory) {
 				return res.status(404).json({
 					message: "Visa Category Not Found",
@@ -22,7 +23,7 @@ module.exports = {
 
 			const visaOrder = await VisaOrder.create({
 				...data,
-				user: req.user.id,
+				// user: req.user.id || null,
 			});
 
 			const orderDetails = await OrderDetails.create({
@@ -48,6 +49,7 @@ module.exports = {
 		try {
 			const { id } = req.params;
 			const data = req.body;
+			console.log("Data hai ye",data)
 
 			const visaOrder = await VisaOrder.findByIdAndUpdate(id, data, {
 				new: true,
@@ -276,16 +278,14 @@ module.exports = {
 		}
 	},
 
-	async editOrderDetails(req, res) {
+	async  editOrderDetails(req, res) {
 		try {
 			const { id } = req.params;
 			const data = req.body;
-
-			const documents =
-				req.files && req.files.documents ? req.files.documents : [];
+			const documents = req.files || [];
 			const updatedDocuments = [];
-
-			// Update basic order details
+	
+			// Find the order by ID
 			const orderDetails = await OrderDetails.findById(id);
 			if (!orderDetails) {
 				return res.status(404).json({
@@ -293,53 +293,52 @@ module.exports = {
 					success: false,
 				});
 			}
-
+	
 			// Handle document uploads
 			if (documents.length > 0) {
 				for (let index = 0; index < documents.length; index++) {
 					const document = documents[index];
-					const documentName = data[`documents[${index}][name]`]; // Get document name from the request body
-
+					const documentName = data[`documents[${index}][name]`] || data.names?.[index];
+	
 					if (!documentName) {
-						throw new Error(
-							`Missing name for document at index ${index}`
-						);
+						return res.status(400).json({
+							message: `Missing name for document at index ${index}`,
+							success: false,
+						});
 					}
-
+	
 					const fileBuffer = document.buffer;
 					const fileName = `${Date.now()}-${document.originalname}`;
-
-					// Upload document to Bunny.net
-					const uploadResult = await uploadToBunny(
-						fileBuffer,
-						fileName
-					);
+	
+					// Upload document to BunnyCDN
+					const uploadResult = await uploadToBunny(fileBuffer, fileName);
 					if (uploadResult.success) {
 						updatedDocuments.push({
 							name: documentName,
 							image: uploadResult.cdnUrl,
 						});
 					} else {
-						throw new Error(
-							`Failed to upload document: ${document.originalname}`
-						);
+						return res.status(500).json({
+							message: `Failed to upload document: ${document.originalname}`,
+							success: false,
+						});
 					}
 				}
-
+	
 				// Update the `documents` field in the database
 				orderDetails.documents = updatedDocuments;
 			}
-
-			// Update other fields provided in the request body
+	
+			// Update other order fields from the request body
 			Object.keys(data).forEach((key) => {
 				if (key !== "documents") {
 					orderDetails[key] = data[key];
 				}
 			});
-
+	
 			// Save the updated order details
 			await orderDetails.save();
-
+	
 			return res.status(200).json({
 				data: orderDetails,
 				message: "Visa Order Updated Successfully",
