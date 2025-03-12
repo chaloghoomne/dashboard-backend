@@ -6,14 +6,10 @@ const aboutSchema = new mongoose.Schema(
 		heading: String,
 		description: String,
 		imageUrl: String,
-		sections: [
-			{
-				heading: { type: String },
-				point: [String],
-				summary: [String],
-				description: String,
-			},
-		],
+		imageAlt: String,
+		metaTitle: { type: String, default: "" },
+		metaDescription: { type: String, default: "" },
+		metaKeywords: { type: [String], default: [] },
 	},
 	{
 		timestamps: true,
