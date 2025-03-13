@@ -617,6 +617,8 @@ The Chalo Ghoomne Team
 			} else {
 				// 6️⃣ Update user
 				user.otp = otp;
+				user.phoneNumber = phoneNumber;
+				user.email = email;
 				await user.save();
 			}
 
