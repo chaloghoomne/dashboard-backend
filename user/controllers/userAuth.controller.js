@@ -558,7 +558,8 @@ The Chalo Ghoomne Team
 		try {
 			console.log("Request Body:", req.body);
 
-			const { phoneNumber, otp, firstName, lastName } = req.body;
+			const { phoneNumber, otp, firstName, lastName, dob, gender,email } = req.body;
+
 
 			// Check if JWT_SECRET is set
 			if (!process.env.JWT_SECRET) {
@@ -607,6 +608,9 @@ The Chalo Ghoomne Team
 					phoneNumber,
 					firstName,
 					lastName,
+					email,
+					dob,
+					gender,
 					otp,
 				});
 				await user.save();

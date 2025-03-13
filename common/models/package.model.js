@@ -22,6 +22,10 @@ const packageSchema = new Schema(
       },
     ],
     rating: Number,
+    metaTitle: { type: String, default: "" },
+
+    metaDescription: { type: String, default: "" },
+    metaKeywords: { type: [String], default: [] },
     showCoTraveller: Boolean,
     documents: [documentSchema],
     docHeading: String,
