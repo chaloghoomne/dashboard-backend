@@ -22,6 +22,7 @@ const packageSchema = new Schema(
       },
     ],
     rating: Number,
+    altImage: {type:String, default:""},
     metaTitle: { type: String, default: "" },
 
     metaDescription: { type: String, default: "" },

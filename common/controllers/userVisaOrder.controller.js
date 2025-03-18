@@ -49,7 +49,7 @@ module.exports = {
 		try {
 			const { id } = req.params;
 			const data = req.body;
-			console.log("Data hai ye",data)
+			// console.log("Data hai ye",data)
 
 			const visaOrder = await VisaOrder.findByIdAndUpdate(id, data, {
 				new: true,
@@ -282,6 +282,7 @@ module.exports = {
 		try {
 			const { id } = req.params;
 			const data = req.body;
+			console.log(data)
 			const documents = req.files || [];
 			const updatedDocuments = [];
 	
