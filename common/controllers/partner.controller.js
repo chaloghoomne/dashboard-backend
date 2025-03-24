@@ -7,11 +7,12 @@ module.exports = {
   async addPartner(req, res) {
     try {
       const data = req.body;
+      console.log(data)
       data.travellersCount = data.travellersCount
         ? Number(data.travellersCount)
         : data.travellersCount;
       const image = req.files && req.files.image ? req.files.image[0] : null;
-
+      console.log(image)
       if (image) {
         const fileBuffer = image.buffer;
         const fileName = `${Date.now()}-${image.originalname}`;

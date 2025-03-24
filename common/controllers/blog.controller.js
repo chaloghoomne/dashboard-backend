@@ -10,7 +10,7 @@ module.exports = {
   async addBlog(req, res) {
     try {
       const data = req.body;
-
+      console.log(data);
       const blogImage =
         req.files && req.files.image ? req.files.image[0] : null;
 
