@@ -10,6 +10,11 @@ const documentSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    position: {
+      type: Number,
+      default: 0,
+    },
+    
   },
   { timestamps: true }
 );
