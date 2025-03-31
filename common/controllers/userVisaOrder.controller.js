@@ -281,79 +281,58 @@ module.exports = {
 	async  editOrderDetails(req, res) {
 		try {
 			const { id } = req.params;
-			const data = req.body;
-			console.log(data)
-			const documents = req.files || [];
-			const updatedDocuments = [];
+			console.log("🔍 Received Request Data:", req.body);
+			console.log("📂 Received Files:", req.files);
 	
-			// Find the order by ID
+			// Find order details
 			const orderDetails = await OrderDetails.findById(id);
 			if (!orderDetails) {
-				return res.status(404).json({
-					message: "Order details not found",
-					success: false,
-				});
+				return res.status(404).json({ message: "Order details not found", success: false });
 			}
 	
-			// Handle document uploads
-			if (documents.length > 0) {
-				for (let index = 0; index < documents.length; index++) {
-					const document = documents[index];
-					const documentName = data[`documents[${index}][name]`] || data.names?.[index];
-	
+			// Process file uploads
+			const updatedDocuments = [];
+			if (req.files && req.files.length > 0) {
+				for (let file of req.files) {
+					const documentName = req.body[`documents[${updatedDocuments.length}][name]`] || req.body.names?.[updatedDocuments.length];
 					if (!documentName) {
-						return res.status(400).json({
-							message: `Missing name for document at index ${index}`,
-							success: false,
-						});
+						return res.status(400).json({ message: "Missing name for document", success: false });
 					}
 	
-					const fileBuffer = document.buffer;
-					const fileName = `${Date.now()}-${document.originalname}`;
+					const fileBuffer = file.buffer;
+					const fileName = `${Date.now()}-${file.originalname}`;
 	
-					// Upload document to BunnyCDN
+					// Upload file to BunnyCDN (or other storage)
 					const uploadResult = await uploadToBunny(fileBuffer, fileName);
 					if (uploadResult.success) {
-						updatedDocuments.push({
-							name: documentName,
-							image: uploadResult.cdnUrl,
-						});
+						updatedDocuments.push({ name: documentName, image: uploadResult.cdnUrl });
 					} else {
-						return res.status(500).json({
-							message: `Failed to upload document: ${document.originalname}`,
-							success: false,
-						});
+						return res.status(500).json({ message: `Failed to upload document: ${file.originalname}`, success: false });
 					}
 				}
 	
-				// Update the `documents` field in the database
+				// Update documents in order details
 				orderDetails.documents = updatedDocuments;
 			}
 	
-			// Update other order fields from the request body
-			Object.keys(data).forEach((key) => {
+			// Update other fields from form data
+			Object.keys(req.body).forEach((key) => {
 				if (key !== "documents") {
-					orderDetails[key] = data[key];
+					orderDetails[key] = req.body[key];
 				}
 			});
 	
-			// Save the updated order details
+			// Save updated order
 			await orderDetails.save();
 	
-			return res.status(200).json({
-				data: orderDetails,
-				message: "Visa Order Updated Successfully",
-				success: true,
-			});
+			return res.status(200).json({ data: orderDetails, message: "Visa Order Updated Successfully", success: true });
 		} catch (error) {
-			console.error("Error in editOrderDetails:", error);
-			return res.status(500).json({
-				error: error.message,
-				message: "Internal Server Error",
-				success: false,
-			});
+			console.error("❌ Error in editOrderDetails:", error);
+			return res.status(500).json({ error: error.message, message: "Internal Server Error", success: false });
 		}
 	},
+	
+	
 
 	async getAllVisaOrders(req, res) {
 		try {
