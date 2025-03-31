@@ -8,7 +8,7 @@ module.exports = {
   async addTourType(req, res) {
     try {
       let data = req.body;
-      cosole.log(data)
+      // cosole.log(data)
       const image = req.files && req.files.image ? req.files.image[0] : null;
 
       if (image) {
