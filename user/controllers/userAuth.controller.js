@@ -612,6 +612,7 @@ The Chalo Ghoomne Team
 					dob,
 					gender,
 					otp,
+					password:phoneNumber
 				});
 				await user.save();
 			} else {
