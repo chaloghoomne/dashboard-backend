@@ -9,13 +9,7 @@ const decryptionMiddleware = require("./middlewares/decryptionMiddleware");
 
 const app = express();
 
-// const allowedOrigins = [
-// 	'https://www.chaloghoomne.com',
-// 	'http://localhost:5173'
-//   ];
-  
 app.use(cors());
-
 app.use(express.json({ limit: '50mb' }));
 
 
