@@ -12,6 +12,7 @@ router.post(
   auth,
   adminAuthController.adminResetPassword
 );
+router.post("/admin-send-email", adminAuthController.adminSendEmail);
 router.get("/admin-profile", auth, adminAuthController.adminProfile);
 router.put(
   "/admin-edit-profile",

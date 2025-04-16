@@ -25,6 +25,14 @@ const adminSchema = new Schema(
         ref: "AdminNotification",
       },
     ],
+    emailIdentities: [
+      {
+        name: String,
+        fromEmail: String,
+        user: String,
+        pass: String,
+      }
+    ]
   },
   { timestamps: true }
 );
