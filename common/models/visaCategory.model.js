@@ -15,8 +15,8 @@ const visaCategorySchema = new Schema(
     icon: String,
     image: String,
     entryType: String,
-    period: Number,
-    validity: Number,
+    period: String,
+    validity: String,
     planDisclaimer: [
       {
         type: String,
