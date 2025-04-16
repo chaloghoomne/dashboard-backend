@@ -7,6 +7,7 @@ const sendMail = require("../../utils/sendMail");
 const uploadToBunny = require("../../utils/uploadToBunny");
 const jwt = require("jsonwebtoken");
 const decryptionMiddleware = require("../../utils/chunkUpload");
+const nodemailer = require("nodemailer");
 
 module.exports = {
 	async adminSignup(req, res) {
@@ -246,6 +247,58 @@ module.exports = {
 		}
 	},
 
+
+
+async adminSendEmail(req, res) {
+	try {
+		// console.log(req.body)
+		const { fromIndex, to, subject, message } = req.body;
+	  
+		// Parse fromIndex if it’s a string
+		const parsedFromIndex = typeof fromIndex === "string" ? JSON.parse(fromIndex) : fromIndex;
+	  
+		const from = parsedFromIndex.fromEmail || parsedFromIndex.user;
+		const pass = parsedFromIndex.pass;
+		// console.log("from: ", from, "pass: ", pass, "to: ", to, "subject: ", subject, "message: ", message);
+	  
+		if (!from || !pass) {
+		  return res.status(400).json({
+			success: false,
+			message: "Missing email credentials in fromIndex",
+		  });
+		}
+	  
+		const transporter = nodemailer.createTransport({
+		  service: "gmail", // Or use other services dynamically if needed
+		  auth: {
+			user: from,
+			pass,
+		  },
+		});
+	  
+		await transporter.sendMail({
+		  from,
+		  to,
+		  subject,
+		  text: message,
+		});
+	  
+		return res.status(200).json({
+		  success: true,
+		  message: "Email sent successfully!",
+		});
+	  
+	  } catch (error) {
+		console.error("Error sending email:", error);
+		return res.status(500).json({
+		  success: false,
+		  message: "Internal Server Error",
+		  error: error.message,
+		});
+	  }	  
+}
+,
+
 	async adminEditProfile(req, res) {
 		try {
 			const token = req.body.token;
@@ -315,4 +368,6 @@ module.exports = {
 			});
 		}
 	},
+
+	
 };
