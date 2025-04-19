@@ -7,10 +7,10 @@ module.exports = {
   async getAllNotifications(req, res) {
     try {
       const header = req.headers.authorization.split(" ")[1];
-      console.log(header);
+      // console.log(header);
       const userId = jwt.verify(header, process.env.JWT_SECRET);
       const usersId = userId.id;
-      console.log(usersId);
+      // console.log(usersId);
 
       // Find all notifications that include the user's ID
       // const notifications = await UserNotification.find({ users: userId }).sort(
@@ -24,7 +24,7 @@ module.exports = {
       // console.log("Notification",notifications[1]);
 
       const user = await User.findById(usersId).select("unreadNotifications");
-      console.log("user",user)
+      // console.log("user",user)
 
       const notificationData = notifications.map((notification) => {
         return {
@@ -32,7 +32,7 @@ module.exports = {
           isRead: !(user.unreadNotifications || []).map(id => id.toString()).includes(notification._id.toString()),
         };
       });
-      console.log("Response being sent:", notificationData);
+      // console.log("Response being sent:", notificationData);
 
       return res.status(200).json({
         data: notificationData,
@@ -176,6 +176,43 @@ module.exports = {
 
       return res.status(200).json({
         message: "All notifications deleted successfully",
+        success: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+    }
+  },
+  async clearCart(req, res) {
+    try {
+      // console.log(req.headers);
+      const token = req.headers.authorization?.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+          success: false,
+        });
+      }
+      // console.log(user)
+      if(user.cart.length === 0) {
+        return res.status(400).json({
+          message: "Cart is already empty",
+          success: false,
+        });
+      }
+
+      user.cart = [];
+      await user.save();
+
+      return res.status(200).json({
+        message: "Cart cleared successfully",
         success: true,
       });
     } catch (error) {

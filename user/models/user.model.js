@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
     suspendedUntill: {
       type: Date,
     },
+    cart:{
+      type: [String],
+      default: []
+    },
     googleAuth: {
       type: Boolean,
       default: false,

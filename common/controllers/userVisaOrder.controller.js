@@ -49,7 +49,7 @@ module.exports = {
 		try {
 			const { id } = req.params;
 			const data = req.body;
-			// console.log("Data hai ye",data)
+			console.log("Data hai ye",data)
 
 			const visaOrder = await VisaOrder.findByIdAndUpdate(id, data, {
 				new: true,
@@ -241,10 +241,13 @@ module.exports = {
 
 	async getOrderDetailsByVisaOrder(req, res) {
 		try {
+			console.log(req.params);
 			const { visaOrderId } = req.params;
+			console.log(visaOrderId);
 			const orderDetails = await OrderDetails.find({
 				visaOrder: visaOrderId,
 			}).populate("visaOrder");
+			console.log(orderDetails);
 
 			return res.status(200).json({
 				data: orderDetails,
@@ -331,6 +334,71 @@ module.exports = {
 			return res.status(500).json({ error: error.message, message: "Internal Server Error", success: false });
 		}
 	},
+
+	async editOrderDetailsV2(req, res) {
+		try {
+		  const { id } = req.params;
+	  
+		  const parsedData = JSON.parse(req.body.data);
+		  const documents = parsedData.documents || [];
+	  
+		  console.log("📨 Parsed Data:", parsedData);
+		  console.log("📁 Uploaded Files:", req.files);
+	  
+		  const orderDetails = await OrderDetails.findById(id);
+		  if (!orderDetails) {
+			return res.status(404).json({ message: "Order not found", success: false });
+		  }
+	  
+		  const updatedDocuments = [];
+	  
+		  if (req.files && req.files.length > 0) {
+			for (let i = 0; i < req.files.length; i++) {
+			  const file = req.files[i];
+			  const documentName = documents[i]?.name;
+	  
+			  if (!documentName) {
+				return res.status(400).json({ message: "Missing name for document", success: false });
+			  }
+	  
+			  const fileBuffer = file.buffer;
+			  const fileName = `${Date.now()}-${file.originalname}`;
+	  
+			  const uploadResult = await uploadToBunny(fileBuffer, fileName);
+			  if (uploadResult.success) {
+				updatedDocuments.push({ name: documentName, image: uploadResult.cdnUrl });
+			  } else {
+				return res.status(500).json({ message: `Failed to upload ${file.originalname}`, success: false });
+			  }
+			}
+	  
+			orderDetails.documents = updatedDocuments;
+		  }
+	  
+		  // Update other fields from data
+		  Object.entries(parsedData).forEach(([key, value]) => {
+			if (key !== "documents") {
+			  orderDetails[key] = value;
+			}
+		  });
+	  
+		  await orderDetails.save();
+	  
+		  return res.status(200).json({
+			data: orderDetails,
+			message: "Visa Order Updated Successfully",
+			success: true,
+		  });
+		} catch (error) {
+		  console.error("❌ Error in editOrderDetailsV2:", error);
+		  return res.status(500).json({
+			error: error.message,
+			message: "Internal Server Error",
+			success: false,
+		  });
+		}
+	  }
+,	  
 	
 	
 
