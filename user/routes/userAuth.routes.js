@@ -17,6 +17,7 @@ router.put(
   upload,
   userAuthController.userEditProfile
 );
+router.post("/addToCart", userAuthController.addToCart);
 router.post("/send-otp", userAuthController.sendMailOtp);
 router.post("/verify-otp", userAuthController.verifyMailOtp);
 router.post("/send-mobile-otp", userAuthController.sendMobileOtp);

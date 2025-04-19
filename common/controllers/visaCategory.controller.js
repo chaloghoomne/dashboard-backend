@@ -8,7 +8,7 @@ module.exports = {
     try {
       const data = req.body;
       // Convert numeric fields to numbers if available
-      console.log(data);
+      // console.log(data);
       data.price = data.price ? Number(data.price) : data.price;
       data.childPrice = data.price ? Number(data.childPrice) : data.childPrice;
       data.period = data.period ? Number(data.period) : data.period;

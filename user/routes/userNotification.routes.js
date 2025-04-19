@@ -26,4 +26,5 @@ router.delete(
   auth,
   userNotificationController.deleteAllNotifications
 );
+router.get("/clear-cart", userNotificationController.clearCart);
 module.exports = router;

@@ -556,7 +556,7 @@ The Chalo Ghoomne Team
 
 	async verifyMobileOtp(req, res) {
 		try {
-			console.log("Request Body:", req.body);
+			// console.log("Request Body:", req.body);
 
 			const { phoneNumber, otp, firstName, lastName, dob, gender,email } = req.body;
 
@@ -583,7 +583,7 @@ The Chalo Ghoomne Team
 				});
 			}
 
-			console.log("OTP Record:", userOtpRecord);
+			// console.log("OTP Record:", userOtpRecord);
 
 			// 2️⃣ Verify OTP
 			if (String(userOtpRecord.otp) !== String(otp)) {
@@ -623,11 +623,11 @@ The Chalo Ghoomne Team
 				await user.save();
 			}
 
-			console.log("User Verified:", user);
+			// console.log("User Verified:", user);
 
 			// 7️⃣ Generate JWT Token
 			const token = await genToken({ id: user._id });
-			console.log("Generated Token:", token);
+			// console.log("Generated Token:", token);
 
 			// 8️⃣ Send Response
 			return res.status(200).json({
@@ -750,6 +750,49 @@ The Chalo Ghoomne Team
 				message: "Internal Server Error",
 				success: false,
 			});
+		}
+	},
+
+	async addToCart(req, res) {
+		try {
+			// console.log(req.body.data)
+			const id = req.body.data;
+			// console.log("id: ", id);
+			const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Unauthorized: No token provided" });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded?.id) {
+            return res.status(401).json({ success: false, message: "Invalid token" });
+        }
+
+        // Find user by ID
+        const user = await User.findById(decoded.id).select("-password");
+		if(!user){
+			return res.status(400).json({
+				message: "User not found",
+				success: false,
+			});
+		}
+		user.cart.push(id);
+		await user.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "Product added to cart successfully",
+			data: user,
+		})
+		// console.log(user);
+		}
+		catch (error) {
+			console.log(error)
+			return res.status(500).json({
+				error: error.message,
+				message: "Internal Server Error",
+				success: false,
+			})
 		}
 	},
 

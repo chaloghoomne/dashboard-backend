@@ -214,8 +214,11 @@ module.exports = {
   },
   async getPackageById(req, res) {
     try {
+      // console.log(req)
       const id = req.params.id;
+      // console.log(id);
       const package = await Package.findById(id).populate("tourTypes");
+      // console.log(package);
       if (!package) {
         return res.status(404).json({
           message: "Package not found",

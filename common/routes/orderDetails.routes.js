@@ -5,6 +5,8 @@ const auth = require("../../middlewares/auth");
 
 router.post("/create-visa-order", orderDetailsController.createVisaOrder);
 router.put("/edit-visa-order/:id", auth, orderDetailsController.editVisaOrder);
+
+
 router.post("/user-visa-orders", orderDetailsController.getVisaOrders);
 router.get(
   "/user-visa-order/:visaOrderId",
@@ -31,6 +33,7 @@ router.put(
   upload,
   orderDetailsController.editOrderDetails
 );
+router.put("/edit-order-details-v2/:id", auth,upload, orderDetailsController.editOrderDetailsV2);
 
 router.get("/visa-orders", auth, orderDetailsController.getAllVisaOrders);
 router.put(

@@ -8,4 +8,5 @@ router.get("/page-by-type/:pageType", pageController.getPageByType);
 router.get("/page/:id", pageController.getPageById);
 router.delete("/page/:id", pageController.deletePage);
 
+
 module.exports = router;
