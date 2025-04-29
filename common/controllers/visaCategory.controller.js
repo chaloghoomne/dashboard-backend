@@ -273,6 +273,27 @@ module.exports = {
     }
   },
 
+  async getAllPackages(req, res) {
+    try {
+      console.log(req.body)
+      const id1 = req.body.id1;
+      const id2 = req.body.id2;
+      const packages = await VisaCategory.find({package:id1,tourType:id2}).select("_id visaTypeHeading processingTime period validity documents price entryType");
+      console.log(packages)
+      return res.status(200).json({
+        data: packages,
+        message: "Packages Fetched Successfully",
+        success: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+    }
+  },
+
   async getVisaCategoryByPackage(req, res) {
     try {
       const { package: packageId, tourType } = req.body;

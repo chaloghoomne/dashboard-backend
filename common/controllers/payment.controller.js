@@ -21,7 +21,7 @@ module.exports = {
         receipt: uuid(),
       };
       console.log(options);
-      const order = await instance.orders.create(options);
+      const order = await instance.ordders.create(options);
       console.log(order);
       const transaction = await Transaction.create({
         user: userId,

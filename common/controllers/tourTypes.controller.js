@@ -210,6 +210,24 @@ module.exports = {
     }
   },
 
+  async getAllTourTypes(req, res) {
+    try {
+      const tourTypes = await TourType.find().select("_id name image");
+      // console.log(tourTypes);
+      return res.status(200).json({
+        message: "Tour Types fetched successfully",
+        success: true,
+        data: tourTypes,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+    }
+  },
+
   async getTourTypeById(req, res) {
     try {
       const { id } = req.params;

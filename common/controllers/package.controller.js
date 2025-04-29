@@ -212,6 +212,24 @@ module.exports = {
       });
     }
   },
+  async getAllCountries(req, res) {
+    try{
+      // console.log(req.body)
+      const countries = await Package.find().select("country image _id");
+      // console.log(countries);
+      return res.status(200).json({
+        message: "Country fetched successfully",
+        data: countries,
+        success: true,
+      });
+    }catch(error){
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+    }
+  },
   async getPackageById(req, res) {
     try {
       // console.log(req)

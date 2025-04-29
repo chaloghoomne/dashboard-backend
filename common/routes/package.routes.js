@@ -4,6 +4,7 @@ const router = require("express").Router();
 
 router.post("/add-place", upload, packageController.addPackage);
 router.get("/places", packageController.getPackages);
+router.get("/getAllCountries", packageController.getAllCountries);
 router.get("/place/:id", packageController.getPackageById);
 router.put("/rank-package/:id", packageController.rankPackage);
 router.put("/edit-place/:id", upload, packageController.editPackage);
