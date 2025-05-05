@@ -78,8 +78,9 @@ module.exports = {
 
 	async getVisaOrders(req, res) {
 		try {
-			const { id } = req.body;
-
+			// console.log(req)
+			const  id  = req.body.user;
+			// console.log(req.body.user)
 			let result = await VisaOrder.find({
 				user: id ? id : req.user.id,
 			}).populate({
@@ -90,49 +91,55 @@ module.exports = {
 					select: "country tourTypes",
 				},
 			});
+			// console.log(result);
 
 			const visaOrder = await Promise.all(
-				result.map(async (order) => {
-					if (order?.visaCategory?.package) {
-						const { country, tourTypes } =
-							order.visaCategory.package;
-						const tourType = tourTypes.find(
-							(item) =>
-								item._id?.toString() ===
-								order.visaCategory.tourType?.toString()
-						);
-
-						const orderDetailsCount =
-							await OrderDetails.countDocuments({
-								visaOrder: order._id,
-							});
-
-						const latestOrderDetails = await OrderDetails.findOne({
-							visaOrder: order._id,
-						}).sort({ createdAt: -1 });
-
-						let documentFulfillmentStatus = true;
-						let latestOrderDetailsId = null;
-
-						if (
-							orderDetailsCount < order.travellersCount ||
-							(latestOrderDetails &&
-								!latestOrderDetails.detailsFulfilled)
-						) {
-							documentFulfillmentStatus = false;
-							latestOrderDetailsId = latestOrderDetails?._id;
-						}
-
-						return {
-							...order.toObject(),
-							country,
-							tourType,
-							documentFulfillmentStatus,
-							latestOrderDetailsId,
-						};
+				result.map(async (order, index) => {
+					if (!order?.visaCategory?.package) {
+					  console.log(`Order at index ${index} skipped — missing package`);
+					  return null;
 					}
+			  
+				  const { country, tourTypes } = order.visaCategory.package;
+			  
+				  const tourType = tourTypes.find(
+					(item) =>
+					  item._id?.toString() === order.visaCategory.tourType?.toString()
+				  );
+			  
+				  const orderDetailsCount = await OrderDetails.countDocuments({
+					visaOrder: order._id,
+				  });
+			  
+				  const latestOrderDetails = await OrderDetails.findOne({
+					visaOrder: order._id,
+				  }).sort({ createdAt: -1 });
+			  
+				  let documentFulfillmentStatus = true;
+				  let latestOrderDetailsId = null;
+			  
+				  if (
+					orderDetailsCount < order.travellersCount ||
+					(latestOrderDetails && !latestOrderDetails.detailsFulfilled)
+				  ) {
+					documentFulfillmentStatus = false;
+					latestOrderDetailsId = latestOrderDetails?._id;
+				  }
+			  
+				  return {
+					...order.toObject(),
+					country,
+					tourType,
+					documentFulfillmentStatus,
+					latestOrderDetailsId,
+				  };
 				})
-			);
+			  );
+			  
+			  // 🔥 Filter out nulls (e.g., orders with missing visaCategory.package)
+			//   const filteredVisaOrders = visaOrder.filter(Boolean);
+			//   console.log(filteredVisaOrders)
+			//   console.log("visaOrder: ", visaOrder);
 
 			return res.status(200).json({
 				data: visaOrder,

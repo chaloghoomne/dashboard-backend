@@ -223,4 +223,53 @@ module.exports = {
       });
     }
   },
+  async removeFromCart(req,res){
+    try{
+      console.log(req.body);
+      const token = req.headers.authorization?.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;
+      const user = await User.findById(userId);
+
+      if(!user){
+        return res.status(404).json({
+          message: "User not found",
+          success: false,
+        });
+      }
+      if(user.cart.length === 0){
+        return res.status(400).json({
+          message: "Cart is already empty",
+          success: false,
+        });
+      }
+      const productId = req.body.id;
+
+      const index = user.cart.indexOf(productId);
+
+      if(index === -1){
+        return res.status(400).json({
+          message: "Product not found in cart",
+          success: false,
+        });
+      }
+
+      user.cart.splice(index,1);
+      await user.save();
+
+      return res.status(200).json({
+        status:200,
+        message: "Product removed from cart successfully",
+        success: true,
+      });
+    }catch(error){
+      console.log(error);
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+      }
+    
+  },
 };

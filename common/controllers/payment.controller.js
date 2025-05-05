@@ -14,12 +14,15 @@ module.exports = {
   async createOrder(req, res) {
     try {
       const userId = req.user.id;
+      console.log(userId);
       const options = {
         amount: req.body.amount * 100,
         currency: "INR",
         receipt: uuid(),
       };
+      console.log(options);
       const order = await instance.orders.create(options);
+      console.log(order);
       const transaction = await Transaction.create({
         user: userId,
         orderId: order.id,
