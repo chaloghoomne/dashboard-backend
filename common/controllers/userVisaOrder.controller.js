@@ -314,6 +314,7 @@ module.exports = {
 	
 					// Upload file to BunnyCDN (or other storage)
 					const uploadResult = await uploadToBunny(fileBuffer, fileName);
+					console.log(uploadResult);
 					if (uploadResult.success) {
 						updatedDocuments.push({ name: documentName, image: uploadResult.cdnUrl });
 					} else {
