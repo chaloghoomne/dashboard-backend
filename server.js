@@ -9,8 +9,54 @@ const decryptionMiddleware = require("./middlewares/decryptionMiddleware");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+// Configure CORS with specific origins and options
+const corsOptions = {
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'https://www.chaloghoomne.com',
+      'https://chaloghoomne.com'
+    ];
+    
+    // Allow requests with no origin (like mobile apps, curl requests, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost in development
+    if (process.env.NODE_ENV === 'development' && /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy: Origin not allowed'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'],
+  credentials: true,
+  maxAge: 86400 // 24 hours in seconds
+};
+
+// Apply CORS configuration to all routes
+app.use(cors(corsOptions));
+
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
+
+// Add CORS error handler
+app.use((err, req, res, next) => {
+  if (err.message.includes('CORS')) {
+    console.error(`CORS Error: ${err.message} - Origin: ${req.headers.origin}`);
+    return res.status(403).json({
+      success: false,
+      message: 'CORS Error: Request origin not allowed',
+      error: err.message
+    });
+  }
+  next(err);
+});
+
+// app.use(express.json({ limit: '50mb' }));
 
 
 app.use(express.json({ limit: '50mb' }));  // Set the JSON body limit to 50mb
