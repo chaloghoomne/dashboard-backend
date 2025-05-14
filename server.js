@@ -18,7 +18,7 @@ const corsOptions = {
       'http://localhost:5173',
       'http://localhost:5174',
       'https://crm-delta-five.vercel.app/',
-      
+      'https://admin.chaloghoomne.com/'
     ];
     
     // Allow requests with no origin (like mobile apps, curl requests, etc.)
@@ -45,7 +45,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Handle preflight requests for all routes
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions));    
 
 // Add CORS error handler
 app.use((err, req, res, next) => {
