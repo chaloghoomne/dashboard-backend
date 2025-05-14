@@ -14,7 +14,11 @@ const corsOptions = {
   origin: function(origin, callback) {
     const allowedOrigins = [
       'https://www.chaloghoomne.com',
-      'https://chaloghoomne.com'
+      'https://chaloghoomne.com',
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://crm-delta-five.vercel.app/',
+      
     ];
     
     // Allow requests with no origin (like mobile apps, curl requests, etc.)
@@ -56,7 +60,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-// app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 
 app.use(express.json({ limit: '50mb' }));  // Set the JSON body limit to 50mb
