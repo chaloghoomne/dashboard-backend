@@ -18,7 +18,8 @@ const corsOptions = {
       'http://localhost:5173',
       'http://localhost:5174',
       'https://crm-delta-five.vercel.app/',
-      
+      'https://admin.chaloghoomne.com/',
+      'https://dashboard-frontend-tau-one.vercel.app/'
     ];
     
     // Allow requests with no origin (like mobile apps, curl requests, etc.)
