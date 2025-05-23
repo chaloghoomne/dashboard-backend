@@ -18,12 +18,8 @@ const corsOptions = {
       'http://localhost:5173',
       'http://localhost:5174',
       'https://crm-delta-five.vercel.app/',
-
-      'https://admin.chaloghoomne.com/',
-      'https://dashboard-frontend-tau-one.vercel.app/'
-
-
-
+      'https://dashboard-frontend-tau-one.vercel.app/',
+      /^https:\/\/(.*\.)?chaloghoomne\.com$/
     ];
     
     // Allow requests with no origin (like mobile apps, curl requests, etc.)
@@ -191,4 +187,5 @@ connectDB()
 	})
 	.catch((error) => {
 		console.log(`Error in database connection: ${error.message}`);
-	});
+	});	
+
