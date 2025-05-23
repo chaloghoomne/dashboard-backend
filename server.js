@@ -22,7 +22,7 @@ const corsOptions = {
       'https://admin.chaloghoomne.com/',
       'https://dashboard-frontend-tau-one.vercel.app/'
 
-      'https://admin.chaloghoomne.com/'
+
 
     ];
     
