@@ -19,8 +19,13 @@ const corsOptions = {
       'http://localhost:5174',
       'https://crm-delta-five.vercel.app/',
       'https://dashboard-frontend-tau-one.vercel.app/',
-      /^https:\/\/(.*\.)?chaloghoomne\.com$/
     ];
+
+
+    const regExpOrigins = [
+        new RegExp('^https://(.*\\.)?chaloghoomne\\.com$')
+    ];
+
     
     // Allow requests with no origin (like mobile apps, curl requests, etc.)
     if (!origin) return callback(null, true);
@@ -30,11 +35,17 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS policy: Origin not allowed'));
-    }
+   if (allowedOrigins.includes(origin) || regExpOrigins.some(regExp => regExp.test(origin))) {
+       callback(null, true);
+   } else {
+       callback(new Error('CORS policy: Origin not allowed'));
+   }
+
+    //if (allowedOrigins.indexOf(origin) !== -1) {
+    //  callback(null, true);
+    // } else {
+    //  callback(new Error('CORS policy: Origin not allowed'));
+    // }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'headers', 'x-requested-with'],
