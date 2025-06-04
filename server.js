@@ -18,6 +18,7 @@ const corsOptions = {
       'http://localhost:5173',
       'http://localhost:5174',
       'https://crm-delta-five.vercel.app/',
+      'https://www.chaloghoomne.com',
       'https://dashboard-frontend-tau-one.vercel.app/',
     ];
 
@@ -56,6 +57,10 @@ const corsOptions = {
 // Apply CORS configuration to all routes
 app.use(cors(corsOptions));
 
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+
 // Handle preflight requests for all routes
 app.options('*', cors(corsOptions));    
 
@@ -72,11 +77,6 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.use(express.json({ limit: '50mb' }));
-
-
-app.use(express.json({ limit: '50mb' }));  // Set the JSON body limit to 50mb
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));  // Set the URL-encoded body limit to 50mb
 
 // Handle 404 - Not Found
 // app.use((req, res, next) => {
