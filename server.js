@@ -17,6 +17,7 @@ const corsOptions = {
       'https://chaloghoomne.com',
       'http://localhost:5173',
       'http://localhost:5174',
+      `https://crm-delta-five.vercel.app`,
       'https://crm-delta-five.vercel.app/',
       'https://www.chaloghoomne.com',
       'https://dashboard-frontend-tau-one.vercel.app/',
