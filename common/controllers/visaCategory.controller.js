@@ -293,6 +293,22 @@ module.exports = {
       });
     }
   },
+  async getAllPackagesCrm(req, res) {
+    try {
+      const packages = await VisaCategory.find().select("_id visaTypeHeading processingTime period validity price entryType");
+      return res.status(200).json({
+        data: packages,
+        message: "Packages Fetched Successfully",
+        success: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+    }
+  },
 
   async getVisaCategoryByPackage(req, res) {
     try {

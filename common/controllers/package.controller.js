@@ -479,6 +479,21 @@ module.exports = {
     }
   },
 
+  async getPackagesVersion(req, res){
+  try {
+    const latest = await Package.findOne().sort({ updatedAt: -1 });
+
+    if (!latest) {
+      return res.status(404).json({ version: null });
+    }
+
+    res.json({ version: latest.updatedAt.toISOString() });
+  } catch (error) {
+    console.error("Error fetching version:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+},
+
   async rankPackage(req, res) {
     try {
       const { id } = req.params;

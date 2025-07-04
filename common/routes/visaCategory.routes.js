@@ -15,6 +15,7 @@ router.put(
 	visaCategoryController.editVisaCategory
 );
 router.post("/getPackages", visaCategoryController.getAllPackages);
+router.get("/getPackagesCrm", visaCategoryController.getAllPackagesCrm);
 router.delete(
 	"/delete-visa-category/:id",
 	visaCategoryController.deleteVisaCategory

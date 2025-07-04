@@ -10,6 +10,7 @@ const packageSchema = new Schema(
   {
     tourTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: "TourType" }],
     heading: String,
+    slug: String,
     country: String,
     city: String,
     image: String,
