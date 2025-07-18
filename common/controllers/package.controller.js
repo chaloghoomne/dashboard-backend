@@ -9,9 +9,12 @@ module.exports = {
   async addPackage(req, res) {
     try {
       let data = req.body;
+      console.log(req.body);
       data.price = data.price ? Number(data.price) : data.price;
 
-      const image = req.files && req.files.image ? req.files.image[0] : null;
+      // const image = req.files && req.files.image ? req.files.image[0] : null;
+      const image = req.files.find((file)=> file.fieldname === 'image') || null;
+      const bannerImage = req.files.find((file)=> file.fieldname === 'bannerImage') || null;
       // const tourTypeImages =
       //   req.files && req.files.tourTypes ? req.files.tourTypes : [];
       const documents =
@@ -24,6 +27,8 @@ module.exports = {
           .json({ message: "Country already exists", success: false });
       }
 
+      // console.log(req.files)
+
       if (image) {
         const fileBuffer = image.buffer;
         const fileName = `${Date.now()}-${image.originalname}`;
@@ -32,6 +37,17 @@ module.exports = {
           data.image = uploadImage.cdnUrl;
         }
       }
+
+      if (bannerImage) {
+        const fileBuffer = bannerImage.buffer;
+        const fileName = `${Date.now()}-${bannerImage.originalname}`;
+        const uploadImage = await uploadToBunny(fileBuffer, fileName);
+        if (uploadImage.success) {
+          data.bannerImage = uploadImage.cdnUrl;
+        }
+      }
+      console.log("banner",bannerImage);
+      console.log("image",image);
 
       if (documents) {
         const documentUploads = await Promise.all(
@@ -257,12 +273,43 @@ module.exports = {
     }
   },
 
+  async getPackageBySlug(req, res) {
+    try {
+      // console.log(req)
+      const id = req.params.id;
+      console.log(id);
+      const package = await Package.findOne({slug:id}).populate("tourTypes");
+      // console.log(package);
+      if (!package) {
+        return res.status(404).json({
+          message: "Package not found",
+          success: false,
+        });
+      }
+      return res.status(200).json({
+        data: package,
+        message: "Package fetched successfully",
+        success: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.message,
+        message: "Internal Server Error",
+        success: false,
+      });
+    }
+  },
+
   async editPackage(req, res) {
     try {
       const id = req.params.id;
       const data = req.body;
       data.price = data.price ? Number(data.price) : data.price;
-      const image = req.files && req.files.image ? req.files.image[0] : null;
+      // console.log(req.files[0], "req.files");
+      // console.log(req.files[2], "req.files22");
+      const image = req.files?.find(file => file.fieldname === 'image') || null;
+const bannerImage = req.files?.find(file => file.fieldname === 'bannerImage') || null;
+      // console.log(bannerImage);
       // const tourTypeImages =
       //   req.files && req.files.tourTypes ? req.files.tourTypes : [];
 
@@ -277,6 +324,7 @@ module.exports = {
 
       // Update the package data (excluding images)
       const updatedData = { ...data };
+      // console.log(data);
 
       // Prepare an array for images to be uploaded
       // const images = [];
@@ -292,6 +340,19 @@ module.exports = {
       } else {
         // If no new image is provided, keep the existing image
         updatedData.image = existingPackage.image;
+      }
+
+      if (bannerImage) {
+        const fileBuffer = bannerImage.buffer;
+        const fileName = `${Date.now()}-${bannerImage.originalname}`;
+        const uploadImage = await uploadToBunny(fileBuffer, fileName);
+        console.log(uploadImage);
+        if (uploadImage.success) {
+          updatedData.bannerImage = uploadImage.cdnUrl;
+        }
+      } else {
+        // If no new image is provided, keep the existing image
+        updatedData.bannerImage = existingPackage.bannerImage;
       }
 
       // // If new tourType images are uploaded, update them; otherwise, retain the old ones
@@ -498,9 +559,7 @@ module.exports = {
     try {
       const { id } = req.params;
       const data = req.body;
-
       const checkExistingRank = await Package.findOne({ rank: data.rank });
-
       if (!checkExistingRank) {
         const updatedPackage = await Package.findByIdAndUpdate(
           id,

@@ -7,6 +7,7 @@ router.get("/places", packageController.getPackages);
 router.get("/version", packageController.getPackagesVersion);
 router.get("/getAllCountries", packageController.getAllCountries)
 router.get("/place/:id", packageController.getPackageById);
+router.get("/placeSlug/:id", packageController.getPackageBySlug);
 router.put("/rank-package/:id", packageController.rankPackage);
 router.put("/edit-place/:id", upload, packageController.editPackage);
 router.delete("/delete-place/:id", packageController.deletePackage);

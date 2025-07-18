@@ -14,7 +14,9 @@ const packageSchema = new Schema(
     country: String,
     city: String,
     image: String,
+    bannerImage: String,
     description: String,
+    seoDescription: String,
     price: Number,
     faq: [
       {
